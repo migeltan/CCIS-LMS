@@ -26,7 +26,7 @@ Kickoff prompt: "Continue the LMS. Clone main, read /CLAUDE.md, verify status, c
 
 ```bash
 mkdir -p /home/claude/lms && cd /home/claude/lms
-[ -d repo ] || git clone --depth 1 https://github.com/migeltan/Learning-Management-System---CCIS.git repo
+[ -d repo ] || git clone --depth 1 https://github.com/migeltan/CCIS-LMS.git repo
 cd repo && git fetch --depth 15 origin main && git reset --hard FETCH_HEAD && git log --oneline -5
 ```
 
@@ -35,7 +35,7 @@ cd repo && git fetch --depth 15 origin main && git reset --hard FETCH_HEAD && gi
 
 ## 3. Project
 
-Classroom/Canvas-style LMS for CCIS, PUP. School project for Systems Integration and Architecture, but it must be **actually usable by about 50 students plus the professor, on a free stack**. Team of 5 (3rd years). **Deadline: Nov 11, 2026.** Full plan: `docs/LMS_Project_Plan.md` (source of truth for roles, timeline, flowcharts, ERD; do not re-read it in full, grep a section).
+Classroom/Canvas-style LMS for CCIS, PUP. School project for Systems Integration and Architecture, but it must be **actually usable by about 50 students plus the professor, on a free stack**. Team of 5 (3rd years). **Deadline: Nov 11, 2026.** Full plan: `docs/Project_Plan.md` (source of truth for roles, timeline, flowcharts, ERD; do not re-read it in full, grep a section).
 
 **Goal:** teachers take courses and handle sections; they post announcements, upload materials (PDF/PPT/links) and create activities; students join a section with a code, see the stream, materials and activities, submit work and see grades. Quizzes are Google Form links. Admin approves teachers. Must also run offline for the demo.
 
@@ -62,15 +62,15 @@ Classroom/Canvas-style LMS for CCIS, PUP. School project for Systems Integration
 ## 5. Where things are and status
 
 ```
-pup-lms/ (local folder; GitHub repo "Learning Management System - CCIS")
+pup-lms/ (local folder; GitHub repo migeltan/CCIS-LMS)
   frontend/  Angular app (src/app, src/environments, angular.json)
   backend/   Supabase CLI (package.json, supabase/config.toml, migrations/ later)
-  docs/      plan (copy LMS_Project_Plan.md here)
+  docs/      Project_Plan.md (plan, roles, flowcharts)
   .github/   PULL_REQUEST_TEMPLATE.md, CODEOWNERS (later)
   .gitignore, README.md, CLAUDE.md
 ```
 
-**Done locally (as of Oct 28, branch `main`, check `git log` for what is pushed):** `git init -b main`; Angular scaffold with Material, `ng generate environments` and `@supabase/supabase-js`; `npm start` shows the Angular starter page from `D:\Projects\pup-lms`; `backend/` with Supabase CLI 2.122.0 and `supabase init`; root `.gitignore`. PR template and README were drafted (verify they exist). **Not done:** first commit and push, Supabase project link, any migration, storage buckets, Google OAuth, real values in `environment.ts` (currently a near-empty default), hosting, CODEOWNERS, branch protection, teammates' onboarding.
+**Done locally (as of Oct 28, branch `main`, check `git log` for what is pushed):** `git init -b main`; Angular scaffold with Material, `ng generate environments` and `@supabase/supabase-js`; `npm start` shows the Angular starter page from `D:\Projects\pup-lms`; `backend/` with Supabase CLI 2.122.0 and `supabase init`; root `.gitignore`. README and PR template added after the first push. **Not done:** first commit and push, Supabase project link, any migration, storage buckets, Google OAuth, real values in `environment.ts` (currently a near-empty default), hosting, CODEOWNERS, branch protection, teammates' onboarding.
 
 **Verify (run in the clone):**
 
@@ -86,11 +86,11 @@ Gotchas: README's clone path must match the repo folder name; Angular files are 
 
 ## 6. Next (Lead's queue, one at a time; say "go" before each)
 
-1. First commit and push: `git add .`, commit, create the GitHub repo "Learning Management System - CCIS", add remote, push `main`. Then fix the README clone path to the real folder name.
+1. Repo hygiene: add teammates as collaborators, protect `main` (PR + 1 review), then CODEOWNERS with their real GitHub usernames.
 2. **A3:** link the Supabase project (`npx supabase login`, `link`), empty `init_schema` migration, `db push`, private buckets `materials` and `submissions` with size limit, Google OAuth client, Site URL and redirect URLs (`http://localhost:4200` and the deployed URL).
 3. **A4:** fill `environment.ts` and `environment.development.ts` with project URL and anon key; `environment.local.ts` and `start:local` later for offline.
 4. **A5:** hosting (root `frontend`, build `npm run build`, SPA fallback, test a deep-link refresh).
-5. **A6 leftovers:** CODEOWNERS with real GitHub usernames, branch protection (check if enforced on a free private repo), copy the plan into `docs/`.
+5. **A6 leftovers:** CODEOWNERS (needs teammates' GitHub usernames).
 6. **A7:** fresh-clone test (`npm install`, `npm start`), then the announcement message to the group.
 7. After that: setup spike checklist (plan Section 6, due Oct 29), review the schema v1 PR, deployed URL by Oct 30, then PR review and integration.
 
