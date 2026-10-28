@@ -1,0 +1,1 @@
+-- init_schema: pipeline check by Lead. Real tables come from the DB role's migration.
