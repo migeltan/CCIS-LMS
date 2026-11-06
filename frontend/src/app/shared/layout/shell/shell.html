@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="nav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>PUP Classroom</span>
+  <span class="spacer"></span>
+  <span class="user">{{ auth.profile()?.full_name || auth.profile()?.email }}</span>
+  <button mat-button (click)="logout()">Logout</button>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav #nav mode="side" opened>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      @if (auth.role() === 'teacher' || auth.role() === 'admin') {
+        <a mat-list-item routerLink="/courses" routerLinkActive="active">My courses</a>
+      }
+      @if (auth.role() === 'admin') {
+        <a mat-list-item routerLink="/admin" routerLinkActive="active">Admin</a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="content">
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

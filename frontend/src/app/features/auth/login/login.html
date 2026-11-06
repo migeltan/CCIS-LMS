@@ -1,0 +1,25 @@
+<div class="wrap">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>PUP Classroom</mat-card-title>
+      <mat-card-subtitle>Sign in with your school account</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <button mat-flat-button class="full" (click)="google()">
+        Sign in with Google
+      </button>
+      <p class="or">or use email and password</p>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field class="full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+        </mat-form-field>
+        <mat-form-field class="full">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
+        <button mat-stroked-button class="full" type="submit">Sign in</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
