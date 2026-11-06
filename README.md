@@ -2,6 +2,8 @@
 
 Classroom-style LMS: Angular (frontend) + Supabase (backend). Full plan, roles, and flowcharts: `docs/Project_Plan.md`.
 
+
+
 ## Quick start
 
 1. Install Node.js (current LTS), Git, and VS Code.
