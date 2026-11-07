@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Join a section</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="outline" style="width: 100%">
+    <mat-label>Join code</mat-label>
+    <input matInput [value]="code()" (input)="onCodeInput($event)" (keydown.enter)="join()" />
+  </mat-form-field>
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Cancel</button>
+  <button mat-flat-button type="button" [disabled]="saving()" (click)="join()">Join</button>
+</mat-dialog-actions>

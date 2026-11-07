@@ -17,3 +17,7 @@ export interface NewSubmission {
 }
 
 export type GradebookRow = SubmissionWithFiles & { student_name: string | null };
+
+export type Section = Tables<'sections'>;
+
+export type MySection = Section & { course_code: string; course_title: string };

@@ -1,0 +1,21 @@
+<h2>My sections</h2>
+
+<button mat-flat-button type="button" (click)="openJoinDialog()">Join a section</button>
+
+@if (loading()) {
+  <p>Loading...</p>
+} @else {
+  @for (s of sections(); track s.id) {
+    <mat-card style="margin-top: 16px">
+      <mat-card-header>
+        <mat-card-title>{{ s.course_code }} · {{ s.course_title }}</mat-card-title>
+        <mat-card-subtitle>{{ s.name }}@if (s.term) { · {{ s.term }} }</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-actions>
+        <a mat-button [routerLink]="['/section', s.id]">Open</a>
+      </mat-card-actions>
+    </mat-card>
+  } @empty {
+    <p>You have not joined any sections yet. Use a join code from your teacher.</p>
+  }
+}
