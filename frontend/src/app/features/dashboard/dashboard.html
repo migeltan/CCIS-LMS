@@ -20,7 +20,7 @@
         @for (s of sections(); track s.id) {
           <a
             class="class-card"
-            [routerLink]="['/section', s.id]"
+            [routerLink]="['/class', s.id]"
             [style.--c1]="design(s.id).c1"
             [style.--c2]="design(s.id).c2"
             [attr.data-pattern]="design(s.id).pattern"
@@ -46,7 +46,7 @@
       </div>
     } @else {
       <div class="center empty">
-        <mat-icon class="empty-icon">school</mat-icon>
+        <mat-icon class="big-icon empty-icon">school</mat-icon>
         <h2>You have not joined any sections yet</h2>
         <p>Use a join code from your teacher to get started.</p>
         <button mat-flat-button type="button" (click)="openJoinDialog()">Join a section</button>

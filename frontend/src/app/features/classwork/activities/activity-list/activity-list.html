@@ -1,0 +1,54 @@
+<div class="page">
+  <header class="header">
+    <h2>Activities</h2>
+    <p class="subtitle">Open an activity to read the instructions and submit your work.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="center"><mat-spinner diameter="40" /></div>
+  } @else if (error()) {
+    <div class="center">
+      <mat-icon class="big-icon">error</mat-icon>
+      <p class="error">{{ error() }}</p>
+    </div>
+  } @else if (activities().length === 0) {
+    <div class="center">
+      <mat-icon class="big-icon">assignment</mat-icon>
+      <h3>No activities yet</h3>
+      <p class="muted">Your teacher has not posted anything for this section.</p>
+    </div>
+  } @else {
+    <ul class="list">
+      @for (a of activities(); track a.id) {
+        <li>
+          <a class="row" [routerLink]="['/activity-submit', a.id]">
+            <span class="icon" [attr.data-status]="status(a)">
+              <mat-icon>{{ icon(a) }}</mat-icon>
+            </span>
+
+            <span class="info">
+              <span class="title">{{ a.title }}</span>
+              <span class="meta">
+                {{ a.points }} points
+                @if (a.due_at) {
+                  · Due {{ a.due_at | date: 'MMM d, h:mm a' }}
+                }
+              </span>
+            </span>
+
+            <span class="right">
+              @if (isOverdue(a)) {
+                <span class="badge" data-status="Overdue">Overdue</span>
+              } @else {
+                <span class="badge" [attr.data-status]="status(a)">{{ status(a) }}</span>
+              }
+              @if (score(a); as s) {
+                <span class="score">{{ s }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</div>
