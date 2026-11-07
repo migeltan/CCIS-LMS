@@ -1,0 +1,28 @@
+<h2>My grades</h2>
+
+@if (loading()) {
+  <p>Loading...</p>
+} @else if (error()) {
+  <p role="alert">{{ error() }}</p>
+} @else {
+  @for (item of items(); track item.submission.id) {
+    <mat-card style="margin-bottom: 16px">
+      <mat-card-header>
+        <mat-card-title>{{ item.activity?.title ?? 'Activity' }}</mat-card-title>
+        <mat-card-subtitle>
+          Submitted {{ item.submission.submitted_at | date: 'medium' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          <strong>Score: {{ item.submission.score }} / {{ item.activity?.points ?? '?' }}</strong>
+        </p>
+        @if (item.submission.feedback) {
+          <p>Feedback: {{ item.submission.feedback }}</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  } @empty {
+    <p>No grades have been released yet.</p>
+  }
+}

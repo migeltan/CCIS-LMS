@@ -1,0 +1,66 @@
+@if (loading()) {
+  <p>Loading...</p>
+} @else if (!activity()) {
+  <p>{{ error() || 'Activity not found.' }}</p>
+} @else {
+  <h2>{{ activity()!.title }} · Gradebook</h2>
+  <p>{{ rows().length }} submission(s) · {{ activity()!.points }} points</p>
+
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+  @if (message()) {
+    <p>{{ message() }}</p>
+  }
+
+  @for (row of rows(); track row.id) {
+    <mat-card style="margin-bottom: 16px">
+      <mat-card-header>
+        <mat-card-title>{{ row.student_name ?? row.student_id }}</mat-card-title>
+        <mat-card-subtitle>
+          Submitted {{ row.submitted_at | date: 'medium' }} · {{ row.status }}
+          @if (row.grade_released) {
+            · Released
+          }
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (row.answer_text) {
+          <p>
+            Link:
+            <a [href]="row.answer_text" target="_blank" rel="noopener">{{ row.answer_text }}</a>
+          </p>
+        }
+        @for (att of row.attachments; track att.id) {
+          <p>File: {{ att.file_name }}</p>
+        }
+
+        <mat-form-field appearance="outline">
+          <mat-label>Score (max {{ activity()!.points }})</mat-label>
+          <input #score matInput type="number" min="0" [value]="row.score ?? ''" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Feedback</mat-label>
+          <textarea #feedback matInput rows="3" [value]="row.feedback ?? ''"></textarea>
+        </mat-form-field>
+
+        <mat-checkbox #release [checked]="row.grade_released">Release grade to student</mat-checkbox>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button
+          mat-flat-button
+          type="button"
+          [disabled]="savingId() === row.id"
+          (click)="save(row, score.value, feedback.value, release.checked)"
+        >
+          Save grade
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  } @empty {
+    <p>No submissions yet.</p>
+  }
+}

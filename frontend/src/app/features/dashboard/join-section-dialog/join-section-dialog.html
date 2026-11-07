@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Join a section</h2>
+
+<mat-dialog-content>
+  <p class="hint">Ask your teacher for the join code, then enter it here.</p>
+
+  <mat-form-field
+    appearance="outline"
+    class="code-field"
+    [class.shake]="shake()"
+    [class.invalid]="error()"
+    (animationend)="shake.set(false)"
+  >
+    <mat-label>Join code</mat-label>
+    <input
+      #codeInput
+      matInput
+      autocomplete="off"
+      [value]="code()"
+      [disabled]="saving()"
+      (input)="onCodeInput($event)"
+      (keydown.enter)="join()"
+    />
+  </mat-form-field>
+
+  @if (error()) {
+    <p class="error" role="alert">
+      <mat-icon class="error-icon">warning</mat-icon>
+      <span>{{ error() }}</span>
+    </p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close [disabled]="saving()">Cancel</button>
+  <button mat-flat-button type="button" [disabled]="saving()" (click)="join()">
+    @if (saving()) {
+      <mat-spinner diameter="18" class="btn-spinner" />
+      Joining...
+    } @else {
+      Join
+    }
+  </button>
+</mat-dialog-actions>
