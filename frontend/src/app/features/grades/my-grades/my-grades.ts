@@ -1,6 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { forkJoin, map, of, switchMap } from 'rxjs';
 import { Activity, SubmissionWithFiles } from '../../../core/models/classwork.models';
 import { Activities } from '../../../core/services/activities';
@@ -16,8 +18,9 @@ interface GradeItem {
 
 @Component({
   selector: 'app-my-grades',
-  imports: [DatePipe, MatCardModule],
+  imports: [DatePipe, MatCardModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './my-grades.html',
+  styleUrl: './my-grades.scss',
 })
 export class MyGrades implements OnInit {
   private gradesService = inject(Grades);
@@ -26,6 +29,15 @@ export class MyGrades implements OnInit {
   items = signal<GradeItem[]>([]);
   loading = signal(true);
   error = signal('');
+
+  /** Average percentage across graded activities that have known points. */
+  average = computed(() => {
+    const percents = this.items()
+      .map((i) => this.percent(i))
+      .filter((p): p is number => p !== null);
+    if (percents.length === 0) return null;
+    return Math.round(percents.reduce((a, b) => a + b, 0) / percents.length);
+  });
 
   ngOnInit(): void {
     this.gradesService
@@ -51,5 +63,11 @@ export class MyGrades implements OnInit {
           this.error.set('Could not load your grades. Please try again.');
         },
       });
+  }
+
+  percent(item: GradeItem): number | null {
+    const points = item.activity?.points;
+    if (!points) return null;
+    return Math.round(((item.submission.score ?? 0) / points) * 100);
   }
 }

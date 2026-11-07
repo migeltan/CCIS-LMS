@@ -1,28 +1,54 @@
-<h2>My grades</h2>
+<div class="page">
+  <header class="header">
+    <h1>My grades</h1>
+    @if (average() !== null) {
+      <p class="subtitle">
+        Average: <strong>{{ average() }}%</strong> across {{ items().length }}
+        {{ items().length === 1 ? 'activity' : 'activities' }}
+      </p>
+    }
+  </header>
 
-@if (loading()) {
-  <p>Loading...</p>
-} @else if (error()) {
-  <p role="alert">{{ error() }}</p>
-} @else {
-  @for (item of items(); track item.submission.id) {
-    <mat-card style="margin-bottom: 16px">
-      <mat-card-header>
-        <mat-card-title>{{ item.activity?.title ?? 'Activity' }}</mat-card-title>
-        <mat-card-subtitle>
-          Submitted {{ item.submission.submitted_at | date: 'medium' }}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          <strong>Score: {{ item.submission.score }} / {{ item.activity?.points ?? '?' }}</strong>
-        </p>
-        @if (item.submission.feedback) {
-          <p>Feedback: {{ item.submission.feedback }}</p>
-        }
-      </mat-card-content>
-    </mat-card>
-  } @empty {
-    <p>No grades have been released yet.</p>
+  @if (loading()) {
+    <div class="center"><mat-spinner diameter="40" /></div>
+  } @else if (error()) {
+    <p class="msg-error" role="alert">
+      <mat-icon>warning</mat-icon><span>{{ error() }}</span>
+    </p>
+  } @else {
+    @for (item of items(); track item.submission.id) {
+      <mat-card appearance="outlined" class="grade-card">
+        <mat-card-content>
+          <div class="top">
+            <div class="info">
+              <h2>{{ item.activity?.title ?? 'Activity' }}</h2>
+              <p class="muted">Submitted {{ item.submission.submitted_at | date: 'MMM d, h:mm a' }}</p>
+            </div>
+
+            <div class="score-box">
+              <span class="score">
+                {{ item.submission.score }} / {{ item.activity?.points ?? '?' }}
+              </span>
+              @if (percent(item) !== null) {
+                <span class="percent">{{ percent(item) }}%</span>
+              }
+            </div>
+          </div>
+
+          @if (item.submission.feedback) {
+            <div class="feedback">
+              <mat-icon>chat_bubble</mat-icon>
+              <p><strong>Feedback:</strong> {{ item.submission.feedback }}</p>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    } @empty {
+      <div class="center">
+        <mat-icon class="big-icon">grade</mat-icon>
+        <h2>No grades yet</h2>
+        <p class="muted">Grades show up here after your teacher releases them.</p>
+      </div>
+    }
   }
-}
+</div>
