@@ -21,7 +21,14 @@
     <header class="header">
       <h1>{{ activity()!.title }}</h1>
       <div class="tags">
-        <span class="tag"><mat-icon>stars</mat-icon>{{ activity()!.points }} points</span>
+                <span class="tag" [class.tag-score]="scoreVisible()">
+          <mat-icon>stars</mat-icon>
+          @if (scoreVisible()) {
+            {{ mySubmission()!.score }} / {{ activity()!.points }} points
+          } @else {
+            {{ activity()!.points }} points
+          }
+        </span>
         @if (activity()!.due_at) {
           <span class="tag" [class.tag-overdue]="isOverdue()">
             <mat-icon>{{ isOverdue() ? 'warning' : 'event' }}</mat-icon>
@@ -72,12 +79,9 @@
             <p class="file-line"><mat-icon>attach_file</mat-icon>{{ att.file_name }}</p>
           }
 
-          @if (sub.grade_released) {
+          @if (sub.grade_released && sub.feedback) {
             <div class="grade-box">
-              <p class="score">{{ sub.score }} / {{ activity()!.points }}</p>
-              @if (sub.feedback) {
-                <p class="feedback"><strong>Feedback:</strong> {{ sub.feedback }}</p>
-              }
+              <p class="feedback"><strong>Feedback:</strong> {{ sub.feedback }}</p>
             </div>
           }
         }

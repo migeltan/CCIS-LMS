@@ -22,17 +22,7 @@ export interface NewComment {
 
 @Injectable({ providedIn: 'root' })
 export class Comments {
-  private data: ActivityComment[] = [
-    {
-      id: 'comment-seed-1',
-      activity_id: 'activity-2',
-      student_id: 'student-1',
-      author_id: 'teacher-1',
-      author_name: 'Prof. Santos',
-      body: 'Thanks for your reflection. See my feedback above.',
-      created_at: new Date().toISOString(),
-    },
-  ];
+  private data: ActivityComment[] = [];
 
   /** Private thread between one student and the teacher for one activity. */
   listForStudent(activityId: string, studentId: string): Observable<ActivityComment[]> {

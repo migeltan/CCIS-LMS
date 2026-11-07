@@ -121,6 +121,12 @@ export class ActivitySubmit implements OnInit {
     return 'Submitted';
   }
 
+  /** True only when the teacher has released a score, so the points tag can show it. */
+  scoreVisible(): boolean {
+    const s = this.mySubmission();
+    return !!s && s.grade_released && s.score !== null;
+  }
+
   isOverdue(): boolean {
     const due = this.activity()?.due_at;
     return !!due && new Date(due) < new Date() && !this.mySubmission();
