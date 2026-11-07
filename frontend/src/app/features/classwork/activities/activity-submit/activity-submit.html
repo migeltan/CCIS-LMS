@@ -1,0 +1,66 @@
+@if (loading()) {
+  <p>Loading...</p>
+} @else if (!activity()) {
+  <p>{{ error() || 'Activity not found.' }}</p>
+} @else {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ activity()!.title }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ activity()!.points }} points
+        @if (activity()!.due_at) {
+          · Due {{ activity()!.due_at | date: 'medium' }}
+        }
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (activity()!.instructions) {
+        <p>{{ activity()!.instructions }}</p>
+      }
+      @if (activity()!.form_url) {
+        <p><a [href]="activity()!.form_url" target="_blank" rel="noopener">Open the Google Form</a></p>
+      }
+
+      @if (mySubmission(); as sub) {
+        <p>
+          Status: <strong>{{ sub.status }}</strong> · Last submitted
+          {{ sub.submitted_at | date: 'medium' }}
+        </p>
+        @for (att of sub.attachments; track att.id) {
+          <p>File: {{ att.file_name }}</p>
+        }
+        @if (sub.grade_released) {
+          <p><strong>Score: {{ sub.score }} / {{ activity()!.points }}</strong></p>
+          @if (sub.feedback) {
+            <p>Feedback: {{ sub.feedback }}</p>
+          }
+        }
+      }
+
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Link to your work</mat-label>
+        <input matInput type="url" [value]="linkUrl()" (input)="onLinkInput($event)" />
+      </mat-form-field>
+
+      <div>
+        <input #picker type="file" hidden (change)="onFileChange($event)" />
+        <button mat-stroked-button type="button" (click)="picker.click()">Choose file</button>
+        <span> {{ file()?.name ?? 'No file chosen' }}</span>
+      </div>
+
+      @if (error()) {
+        <p role="alert">{{ error() }}</p>
+      }
+      @if (message()) {
+        <p>{{ message() }}</p>
+      }
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-flat-button type="button" [disabled]="saving()" (click)="submit()">
+        {{ mySubmission() ? 'Resubmit' : 'Submit' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+}
