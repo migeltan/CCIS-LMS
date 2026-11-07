@@ -1,0 +1,51 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Post an activity</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div [formGroup]="form">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+        @if (form.controls.title.hasError('required')) {
+          <mat-error>Title is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Instructions</mat-label>
+        <textarea matInput rows="4" formControlName="instructions"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Points</mat-label>
+        <input matInput type="number" min="0" formControlName="points" />
+        @if (form.controls.points.invalid) {
+          <mat-error>Enter 0 or more</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Due date and time (optional)</mat-label>
+        <input matInput type="datetime-local" formControlName="dueAt" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Google Form link (optional)</mat-label>
+        <input matInput type="url" formControlName="formUrl" />
+      </mat-form-field>
+    </div>
+
+    @if (error()) {
+      <p role="alert">{{ error() }}</p>
+    }
+    @if (message()) {
+      <p>{{ message() }}</p>
+    }
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-flat-button type="button" [disabled]="saving()" (click)="post()">Post activity</button>
+  </mat-card-actions>
+</mat-card>

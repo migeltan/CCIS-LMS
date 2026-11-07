@@ -15,3 +15,5 @@ export interface NewSubmission {
   answerText: string | null; // the link goes here
   file?: File | null;
 }
+
+export type GradebookRow = SubmissionWithFiles & { student_name: string | null };

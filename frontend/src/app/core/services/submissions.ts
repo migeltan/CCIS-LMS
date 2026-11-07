@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 import {
   Attachment,
+  GradebookRow,
   NewSubmission,
   Submission,
   SubmissionWithFiles,
@@ -9,8 +10,26 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class Submissions {
-  private submissions: Submission[] = [];
+  private submissions: Submission[] = [
+    {
+      id: 'sub-seed-1',
+      activity_id: 'activity-1',
+      student_id: 'student-2',
+      answer_text: 'https://example.com/juan-essay',
+      status: 'submitted',
+      score: null,
+      feedback: null,
+      grade_released: false,
+      submitted_at: new Date().toISOString(),
+    },
+  ];
   private attachments: Attachment[] = [];
+
+  // Mock only. The real service will join the profiles table for full_name.
+  private names: Record<string, string> = {
+    'student-1': 'Test Student',
+    'student-2': 'Juan Dela Cruz',
+  };
 
   private withFiles(s: Submission): SubmissionWithFiles {
     return { ...s, attachments: this.attachments.filter((a) => a.submission_id === s.id) };
@@ -23,9 +42,11 @@ export class Submissions {
     return of(found ? this.withFiles(found) : undefined).pipe(delay(200));
   }
 
-  listByActivity(activityId: string): Observable<SubmissionWithFiles[]> {
+  listByActivity(activityId: string): Observable<GradebookRow[]> {
     return of(
-      this.submissions.filter((s) => s.activity_id === activityId).map((s) => this.withFiles(s)),
+      this.submissions
+        .filter((s) => s.activity_id === activityId)
+        .map((s) => ({ ...this.withFiles(s), student_name: this.names[s.student_id] ?? null })),
     ).pipe(delay(200));
   }
 
