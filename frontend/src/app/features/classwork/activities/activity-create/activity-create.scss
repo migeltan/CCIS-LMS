@@ -1,0 +1,110 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 24px 32px;
+}
+
+.back {
+  margin-left: -12px;
+}
+
+.header {
+  margin: 8px 0 20px;
+
+  h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-medium);
+  }
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.form-card {
+  transition:
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.form-card.invalid {
+  --mat-card-outlined-outline-color: var(--mat-sys-error);
+  border-color: var(--mat-sys-error);
+  box-shadow: 0 0 0 1px var(--mat-sys-error);
+  background: color-mix(in srgb, var(--mat-sys-error) 6%, var(--mat-sys-surface));
+}
+
+.form-card.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-card.shake {
+    animation: none;
+  }
+}
+
+mat-card-content {
+  padding-top: 20px !important;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // Adds breathing room between fields so error messages don't overlap
+}
+
+.full {
+  width: 100%;
+}
+
+// Points | Due date | Time
+.due-row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 12px;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0; // Slightly more top spacing for general messages too
+
+  mat-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.msg-error {
+  color: var(--mat-sys-error);
+}
+
+.msg-success {
+  color: var(--mat-sys-primary);
+  font-weight: 500;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@media (max-width: 560px) {
+  .due-row {
+    grid-template-columns: 1fr;
+  }
+}
