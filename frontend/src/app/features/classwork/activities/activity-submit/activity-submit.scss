@@ -208,9 +208,16 @@ mat-card-content {
   color: var(--mat-sys-error);
 }
 
-.msg-success {
-  color: var(--mat-sys-primary);
-  font-weight: 500;
+.msg.msg-success {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #e6f4ea;
+  color: #137333;
+  font-weight: 600;
+
+  mat-icon {
+    color: #137333;
+  }
 }
 
 .btn-spinner {

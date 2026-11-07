@@ -177,23 +177,34 @@ export class ActivitySubmit implements OnInit {
     if (event.target === event.currentTarget) this.shakeWork.set(false);
   }
 
-  /** Submit button handler: asks "Are you sure?" first, unless the work is empty. */
+  /** Submit button handler: validates first, then asks "Are you sure?". */
   askToSubmit(): void {
     if (this.saving()) return;
 
+    const link = this.linkUrl().trim();
+
     // Empty work: go straight to submit() so the red shake still happens.
-    if (!this.linkUrl().trim() && !this.file()) {
+    if (!link && !this.file()) {
       this.submit();
       return;
     }
 
+    // Bad link: show the error before asking anything.
+    if (link && !/^https?:\/\//i.test(link)) {
+      this.submit();
+      return;
+    }
+
+    const again = !!this.mySubmission();
     this.dialog
       .open(ConfirmDialog, {
         width: '380px',
         data: {
-          title: 'Submit your work?',
-          message: 'Your teacher will see it. You can still resubmit later.',
-          confirmText: 'Yes, submit',
+          title: again ? 'Resubmit your work?' : 'Submit your work?',
+          message: again
+            ? 'This replaces your previous submission.'
+            : 'Your teacher will see it. You can still resubmit later.',
+          confirmText: again ? 'Yes, resubmit' : 'Yes, submit',
         },
       })
       .afterClosed()
