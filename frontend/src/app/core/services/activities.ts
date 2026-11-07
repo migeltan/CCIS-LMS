@@ -15,6 +15,17 @@ export class Activities {
       form_url: null,
       created_at: new Date().toISOString(),
     },
+    
+    {
+      id: 'activity-2',
+      section_id: 'section-1',
+      title: 'Activity 2: Reflection',
+      instructions: 'Write a short reflection about our first week.',
+      points: 50,
+      due_at: '2026-11-05T23:59:00Z',
+      form_url: null,
+      created_at: new Date().toISOString(),
+    },
   ];
 
   listBySection(sectionId: string): Observable<Activity[]> {

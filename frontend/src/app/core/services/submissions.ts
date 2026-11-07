@@ -10,7 +10,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class Submissions {
-  private submissions: Submission[] = [
+    private submissions: Submission[] = [
     {
       id: 'sub-seed-1',
       activity_id: 'activity-1',
@@ -20,6 +20,17 @@ export class Submissions {
       score: null,
       feedback: null,
       grade_released: false,
+      submitted_at: new Date().toISOString(),
+    },
+    {
+      id: 'sub-seed-2',
+      activity_id: 'activity-2',
+      student_id: 'student-1',
+      answer_text: 'https://example.com/my-reflection',
+      status: 'graded',
+      score: 45,
+      feedback: 'Good reflection. Add more examples next time.',
+      grade_released: true,
       submitted_at: new Date().toISOString(),
     },
   ];
