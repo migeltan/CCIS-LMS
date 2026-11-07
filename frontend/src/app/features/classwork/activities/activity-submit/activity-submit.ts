@@ -11,6 +11,14 @@ import { Submissions } from '../../../../core/services/submissions';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
+const ALLOWED_TYPES = [
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'image/png',
+  'image/jpeg',
+];
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
 @Component({
   selector: 'app-activity-submit',
@@ -64,10 +72,24 @@ export class ActivitySubmit implements OnInit {
   }
 
   onFileChange(event: Event): void {
-    const picked = (event.target as HTMLInputElement).files?.[0] ?? null;
-    this.file.set(picked);
-  }
+    const input = event.target as HTMLInputElement;
+    const picked = input.files?.[0] ?? null;
+    this.error.set('');
 
+    if (picked && !ALLOWED_TYPES.includes(picked.type)) {
+      input.value = '';
+      this.file.set(null);
+      this.error.set('Only PDF, PPTX, DOCX, PNG or JPG files are allowed.');
+      return;
+    }
+    if (picked && picked.size > MAX_FILE_BYTES) {
+      input.value = '';
+      this.file.set(null);
+      this.error.set('The file must be 10 MB or smaller.');
+      return;
+    }
+    this.file.set(picked);
+   }
   submit(): void {
     const activity = this.activity();
     if (!activity) return;

@@ -44,7 +44,7 @@
       </mat-form-field>
 
       <div>
-        <input #picker type="file" hidden (change)="onFileChange($event)" />
+        <input #picker type="file" hidden accept=".pdf,.pptx,.docx,.png,.jpg,.jpeg" (change)="onFileChange($event)" />
         <button mat-stroked-button type="button" (click)="picker.click()">Choose file</button>
         <span> {{ file()?.name ?? 'No file chosen' }}</span>
       </div>
