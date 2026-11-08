@@ -181,6 +181,9 @@ export class ActivityCreate {
     forkJoin([request$, timer(MIN_SAVING_MS)]).subscribe(([ok]) => {
       this.saving.set(false);
       this.form.enable();
+      if (!this.form.controls.dueDate.value) {
+        this.form.controls.dueTime.disable({ emitEvent: false });
+      }
 
       if (!ok) {
         this.error.set('Something went wrong. Please try again.');
