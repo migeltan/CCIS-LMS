@@ -23,7 +23,7 @@ import {
 } from './classwork-item-dialog/classwork-item-dialog.component';
 
 interface ClassworkGroup {
-  name: string | null;
+  name: string | null; // null = the default group
   items: Activity[];
 }
 
@@ -47,7 +47,15 @@ export class ClassworkComponent {
     'Activity',
   ];
 
-  // 1. TOPICS IS NOW A SIGNAL
+  // Display name of the default group. Renaming it only changes this label.
+  protected readonly defaultTopicName = signal('No topic');
+
+  // Bumped whenever MOCK_ACTIVITIES changes so the view refreshes
+  private readonly version = signal(0);
+  private bump(): void {
+    this.version.update((v) => v + 1);
+  }
+
   protected readonly topics = signal<string[]>(
     Array.from(
       new Set(
@@ -59,19 +67,19 @@ export class ClassworkComponent {
   );
 
   protected get items(): Activity[] {
+    this.version();
     return MOCK_ACTIVITIES.filter((item) => item.sectionId === this.sectionId);
   }
 
-  // 2. NOTICE THE PARENTHESES ON this.topics()
+  // The default group is always first and always shown
   protected get groups(): ClassworkGroup[] {
     const items = this.items;
     const named = this.topics().map((name) => ({
-      // <--- this.topics() with ()
       name,
       items: items.filter((item) => item.topic === name),
     }));
-    const unassigned = items.filter((item) => item.topic === null);
-    return unassigned.length > 0 ? [{ name: null, items: unassigned }, ...named] : named;
+    const unassigned = items.filter((item) => !item.topic);
+    return [{ name: null, items: unassigned }, ...named];
   }
 
   protected attachmentName(item: Activity): string | null {
@@ -93,7 +101,14 @@ export class ClassworkComponent {
     if (!result) return;
 
     if (kind === 'Topic') {
-      this.topics.update((t) => [...t, result.title]); // Signal update
+      const name = result.title.trim();
+      if (this.nameTaken(name, null)) {
+        this.snackBar.open('A topic with that name already exists.', 'Dismiss', {
+          duration: 4000,
+        });
+        return;
+      }
+      this.topics.update((t) => [...t, name]);
       return;
     }
 
@@ -108,8 +123,10 @@ export class ClassworkComponent {
       points: isActivity ? result.points : 0,
       topic: topicName,
       attachmentPath: null,
+      linkUrl: result.linkUrl,
     };
     MOCK_ACTIVITIES.push(item);
+    this.bump();
     if (result.file) {
       await this.attachFile(item, result.file);
     }
@@ -128,10 +145,12 @@ export class ClassworkComponent {
 
     item.title = result.title;
     item.details = result.details;
+    item.linkUrl = result.linkUrl;
     if (item.kind === 'Activity') {
       item.dueAt = result.dueAt;
       item.points = result.points;
     }
+    this.bump();
     if (result.file) {
       await this.attachFile(item, result.file);
     }
@@ -148,56 +167,83 @@ export class ClassworkComponent {
         if (confirmed) {
           const index = MOCK_ACTIVITIES.findIndex((i) => i.id === item.id);
           if (index !== -1) MOCK_ACTIVITIES.splice(index, 1);
+          this.bump();
         }
       });
   }
 
-  // 3. EDIT TOPIC USING SIGNALS AND WINDOW.PROMPT
-  protected editTopic(oldName: string | null): void {
-    const defaultPrompt = oldName ?? 'New Topic';
-    const newName = window.prompt('Enter new topic name:', defaultPrompt);
+  // true if another topic (or the default group) already uses this name
+  private nameTaken(name: string, except: string | null): boolean {
+    const lower = name.toLowerCase();
+    const all = [this.defaultTopicName(), ...this.topics()];
+    return all.some((n) => n.toLowerCase() === lower && n !== except);
+  }
 
-    if (!newName || newName.trim() === '' || newName === oldName) return;
+  protected async editTopic(oldName: string | null): Promise<void> {
+    const current = oldName ?? this.defaultTopicName();
 
-    if (oldName === null) {
-      this.topics.update((t) => [...t, newName]);
-    } else {
-      this.topics.update((t) => t.map((name) => (name === oldName ? newName : name)));
+    const result = await firstValueFrom(
+      this.dialog
+        .open<ClassworkItemDialogComponent, ClassworkDialogData, ClassworkDialogResult>(
+          ClassworkItemDialogComponent,
+          { width: '560px', data: { kind: 'Topic', initialTitle: current } },
+        )
+        .afterClosed(),
+    );
+    const newName = result?.title.trim();
+    if (!newName || newName === current) return;
+
+    if (this.nameTaken(newName, current)) {
+      this.snackBar.open('A topic with that name already exists.', 'Dismiss', {
+        duration: 4000,
+      });
+      return;
     }
 
+    // Default group: only the label changes
+    if (oldName === null) {
+      this.defaultTopicName.set(newName);
+      return;
+    }
+
+    this.topics.update((t) => t.map((n) => (n === oldName ? newName : n)));
     MOCK_ACTIVITIES.forEach((item) => {
       if (item.sectionId === this.sectionId && item.topic === oldName) {
         item.topic = newName;
       }
     });
+    this.bump();
   }
 
   protected deleteTopic(topicName: string | null): void {
-    const displayName = topicName ?? 'No topic';
+    const displayName = topicName ?? this.defaultTopicName();
+    const message =
+      topicName === null
+        ? `Remove everything in "${displayName}"? All its materials and activities will be permanently deleted.`
+        : `Delete "${displayName}"? All materials and activities inside it will be permanently removed.`;
 
     this.dialog
       .open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
         width: '560px',
-        data: {
-          message: `Delete "${displayName}"? All materials and activities inside it will be permanently removed.`,
-        },
+        data: { message },
       })
       .afterClosed()
       .subscribe((confirmed) => {
         if (!confirmed) return;
 
+        // The default group stays; named topics are removed
         if (topicName !== null) {
           this.topics.update((t) => t.filter((name) => name !== topicName));
         }
 
         for (let i = MOCK_ACTIVITIES.length - 1; i >= 0; i--) {
-          if (
-            MOCK_ACTIVITIES[i].sectionId === this.sectionId &&
-            MOCK_ACTIVITIES[i].topic === topicName
-          ) {
+          const it = MOCK_ACTIVITIES[i];
+          const inGroup = topicName === null ? !it.topic : it.topic === topicName;
+          if (it.sectionId === this.sectionId && inGroup) {
             MOCK_ACTIVITIES.splice(i, 1);
           }
         }
+        this.bump();
       });
   }
 
@@ -214,6 +260,7 @@ export class ClassworkComponent {
   private async attachFile(item: Activity, file: File): Promise<void> {
     try {
       item.attachmentPath = await this.storage.uploadMaterial(item.sectionId, file);
+      this.bump();
     } catch {
       this.snackBar.open('File upload failed.', 'Dismiss', { duration: 5000 });
     }

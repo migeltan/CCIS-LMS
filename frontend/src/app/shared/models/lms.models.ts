@@ -26,6 +26,7 @@ export interface Activity {
   points: number;
   topic: string | null;
   attachmentPath?: string | null;
+  linkUrl?: string | null;
 }
 
 export interface Student {

@@ -1,50 +1,88 @@
 $accent: #f4847b;
-$bg: #fff9f9;
-$font-heading: 'The Seasons', serif;
-$font-body: 'TT Drugs', 'Poppins', sans-serif;
 
-:host {
-  display: block;
-  background: $bg;
-  font-family: $font-body;
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px !important;
 }
 
-.item-dialog {
+.full {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.attach {
+  margin-top: 4px;
+
   &__title {
+    margin: 0 0 2px;
+    font-size: 1rem;
     color: $accent;
-    font-family: $font-heading;
   }
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding-top: 0.5rem;
+  &__hint {
+    margin: 0 0 12px;
+    font-size: 0.85rem;
+    color: #777;
+  }
+}
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  &__name {
+    color: #555;
+    font-size: 0.9rem;
+    word-break: break-all;
+  }
+}
+
+.msg-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin: 0;
+  width: 100%;
+}
+
+/* coral buttons instead of blue */
+:host ::ng-deep {
+  button[mat-stroked-button] {
+    border: 1px solid $accent !important;
+    color: $accent !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
   }
 
-  &__upload {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  button[mat-flat-button] {
+    background-color: $accent !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
   }
 
-  &__file {
-    display: none;
+  button[mat-button] {
+    color: $accent !important;
+    font-weight: 600 !important;
   }
 
-  &__file-name {
-    color: $accent;
-    font-weight: 600;
-    overflow-wrap: anywhere;
+  .mat-mdc-form-field.mat-focused .mdc-notched-outline > * {
+    border-color: $accent !important;
   }
-
-  &__error {
-    margin: 0;
-    color: #c0392b;
-  }
-
-  &__save {
-    background: $accent;
-    color: #fff;
+  .mat-mdc-form-field.mat-focused .mdc-floating-label {
+    color: $accent !important;
   }
 }

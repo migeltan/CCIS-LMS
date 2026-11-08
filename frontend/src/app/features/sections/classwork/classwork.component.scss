@@ -1,5 +1,4 @@
 $accent: #f4847b;
-$bg: #fff9f9;
 
 .classwork {
   padding: 2rem;
@@ -25,8 +24,9 @@ $bg: #fff9f9;
   font-weight: 600 !important;
 
   .btn-icon {
-    width: 18px !important;
-    height: 18px !important;
+    width: 20px;
+    height: 20px;
+    flex: none;
   }
 }
 
@@ -36,9 +36,9 @@ $bg: #fff9f9;
   border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  /* Prevents the weird stretching */
   width: 100%;
   box-sizing: border-box;
+  /* no overflow: hidden here, or it will cut off the menus */
 }
 
 .topic__header {
@@ -60,25 +60,26 @@ $bg: #fff9f9;
   gap: 0.5rem;
 }
 
-/* --- ICON BUTTONS (Edit, Delete, Add) --- */
+/* --- ICON BUTTONS (white by default, coral inside cards) --- */
 .icon-button {
-  background: transparent;
-  border: 1px solid #ffffff; /* White border */
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
+  flex: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  width: 40px;
+  height: 40px;
   padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
   transition: background 0.2s;
 
-  img {
-    width: 16px !important;
-    height: 16px !important;
-    object-fit: contain !important;
-    display: block !important;
+  svg {
+    width: 22px;
+    height: 22px;
+    display: block;
   }
 
   &:hover {
@@ -112,53 +113,39 @@ $bg: #fff9f9;
     font-size: 0.85rem;
   }
 
-  /* Pushes the edit/delete icons to the far right */
   &__actions {
     display: flex;
     gap: 0.5rem;
     margin-left: auto;
   }
 
-  /* Re-style the icon buttons inside the white card */
+  &__title {
+    color: $accent;
+    font-size: 1.3rem;
+    margin: 0.5rem 0;
+  }
+
+  &__details {
+    color: #777;
+    margin-bottom: 1.5rem;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
   .icon-button {
-    background: transparent !important;
-    border: 1px solid #f4847b !important;
-    border-radius: 50% !important;
-    width: 36px !important;
-    height: 36px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    padding: 0 !important;
+    color: $accent;
 
-    /* Force the image to show */
-    img {
-      width: 16px !important;
-      height: 16px !important;
-      object-fit: contain !important;
-      display: block !important;
-    }
-
-    &__title {
-      color: $accent;
-      font-size: 1.3rem;
-      margin: 0.5rem 0;
-    }
-
-    &__details {
-      color: #777;
-      margin-bottom: 1.5rem;
-    }
-
-    &__footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
+    &:hover {
+      background: rgba(244, 132, 123, 0.12);
     }
   }
 }
-/* --- PILL BUTTONS (Open Submissions & Files) --- */
+
+/* --- PILL BUTTONS --- */
 .action-pill {
   border: 1px solid $accent !important;
   color: $accent !important;
@@ -172,13 +159,13 @@ $bg: #fff9f9;
   font-weight: 600 !important;
 
   .pill-icon {
-    width: 16px !important;
-    height: 16px !important;
-    object-fit: contain !important;
+    width: 18px;
+    height: 18px;
+    flex: none;
   }
 }
 
-/* --- FIX THE DROPDOWN MENUS --- */
+/* --- DROPDOWN MENUS --- */
 ::ng-deep .custom-lms-menu {
   background-color: #ffffff !important;
   border: 1px solid #f4847b !important;
@@ -186,7 +173,6 @@ $bg: #fff9f9;
   padding: 0.5rem !important;
   box-shadow: 0 4px 12px rgba(244, 132, 123, 0.15) !important;
 
-  /* The items inside the menu */
   .mat-mdc-menu-item {
     border-radius: 999px !important;
     margin-bottom: 4px;
@@ -195,20 +181,13 @@ $bg: #fff9f9;
     font-weight: 600 !important;
     transition: background 0.2s;
 
-    /* On hover, make it light coral */
     &:hover {
       background-color: rgba(244, 132, 123, 0.1) !important;
+    
+  .topic__empty {
+    color: #ffffff;
+    margin: 0;
+  }
     }
   }
-}
-
-/* --- ENSURE TOPIC DOESN'T CUT OFF MENUS --- */
-.topic {
-  background: #f4847b;
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-  /* Ensure there's no overflow: hidden here, or it will cut off the menu */
 }
