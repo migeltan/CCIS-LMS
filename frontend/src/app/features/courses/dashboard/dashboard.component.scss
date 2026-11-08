@@ -2,6 +2,7 @@
 
 $accent: #f4847b;
 $accent-strong: #e86f5c;
+$accent-dark: #ee6f65;
 $bg: #fff9f9;
 $font-heading: 'The Seasons', serif;
 $font-body: 'TT Drugs', 'Poppins', sans-serif;
@@ -19,8 +20,8 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px !important; /* Forces a slim, strict height */
-  padding: 0 2rem !important; /* NO top/bottom padding, only left/right */
+  height: 70px !important;
+  padding: 0 2rem !important;
   background-color: #ffffff;
   border-bottom: 1px solid #f4847b;
   width: 100%;
@@ -40,7 +41,7 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   }
 
   &__wordmark {
-    height: 180px !important; /* Make this bigger if the text is still too small */
+    height: 180px !important;
     width: auto !important;
     display: block;
   }
@@ -87,7 +88,7 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px; /* Small gap */
+  gap: 2px;
 }
 
 /* --- LOGOUT BUTTON (Slim) --- */
@@ -98,7 +99,7 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   gap: 4px !important;
   white-space: nowrap !important;
   min-width: 90px !important;
-  height: 24px !important; /* Very slim */
+  height: 24px !important;
   padding: 0 10px !important;
   border-color: #f4847b !important;
   color: #f4847b !important;
@@ -120,9 +121,6 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   min-height: calc(100vh - 80px);
 
   &__welcome {
-    color: #333;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
     margin: 0;
     padding: 1rem 3rem;
     border: 1px solid $accent;
@@ -170,24 +168,176 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    align-items: stretch;
     gap: 1.5rem;
     padding: 2rem;
   }
 }
 
-/* --- SECTION ROW (The Pill) --- */
+/* --- BUTTONS THAT POP (solid coral) --- */
+.add-btn,
+.create-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  padding: 0 18px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background-color: $accent !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  box-shadow: 0 3px 8px rgba($accent, 0.4);
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.15s;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+
+  &:hover {
+    background-color: $accent-dark !important;
+    box-shadow: 0 5px 12px rgba($accent, 0.5);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* --- COURSE CARD --- */
+.course-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid $accent;
+  border-radius: 0.75rem;
+  background: #fff;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 8px 18px rgba($accent, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &__cover {
+    position: relative;
+    display: flex;
+    flex: none;
+    align-items: flex-end;
+    min-height: 9rem;
+    padding: 1rem;
+  }
+
+  &__title {
+    margin: 0;
+    color: #fff;
+    font-family: $font-heading;
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  &__actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  /* fixed height = every card's footer lines up; extra sections scroll */
+  &__sections {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: 0.6rem;
+    height: 10.5rem;
+    margin: 0;
+    padding: 1rem 0.5rem 1rem 1rem;
+    overflow-y: auto;
+    list-style: none;
+
+    /* slider is invisible until you hover */
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    scrollbar-gutter: stable;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 999px;
+    }
+
+    &:hover {
+      scrollbar-color: rgba($accent, 0.7) transparent;
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba($accent, 0.7);
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex: none;
+    justify-content: center;
+    padding: 0.75rem;
+    border-top: 1px solid $accent;
+    background: rgba($accent, 0.06);
+  }
+}
+
+/* round white buttons on the cover (edit, delete) */
+.round-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid $accent;
+  border-radius: 50%;
+  background: #fff;
+  color: $accent-strong;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: $accent;
+    color: #fff;
+  }
+}
+
+/* --- SECTION ROW (the pill) --- */
 .section-row {
   display: flex;
+  flex: none; /* stops the pills from squashing when the list scrolls */
   align-items: center;
   justify-content: space-between;
   background: #fff9f9;
   border: 1px solid #f4847b;
-  border-radius: 999px; /* Makes it a perfect pill */
+  border-radius: 999px;
   padding: 0.5rem 0.5rem 0.5rem 1.5rem;
-  margin-bottom: 0.75rem;
   transition: all 0.2s ease-in-out;
 
-  /* When hovering over the row, turn the background coral and text white */
   &:hover {
     background: #f4847b;
 
@@ -195,7 +345,6 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
       color: #ffffff;
     }
 
-    /* Invert the SVG icons to white on hover */
     .icon-btn img {
       filter: brightness(0) invert(1);
     }
@@ -211,30 +360,11 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   font-family: 'TT Drugs', sans-serif;
 }
 
-/* Forces ALL buttons in the dashboard to be coral */
-.add-btn,
-.create-btn {
-  border: 1px solid #f4847b !important;
-  color: #f4847b !important;
-  background-color: transparent !important;
-  border-radius: 999px !important;
-  font-weight: 600 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  padding: 0 16px !important;
-  height: 36px !important;
-
-  /* Forces the + icon to match */
-  .btn-icon {
-    width: 14px !important;
-    height: 14px !important;
-    filter: invert(54%) sepia(36%) saturate(1935%) hue-rotate(324deg) brightness(98%) contrast(95%); /* Filters a black SVG to coral */
-  }
-
-  &:hover {
-    background-color: rgba(244, 132, 123, 0.1) !important;
-  }
+.section-empty {
+  margin: auto;
+  color: rgba($accent, 0.8);
+  font-size: 0.95rem;
+  text-align: center;
 }
 
 /* --- ACTION ICONS --- */
@@ -258,80 +388,10 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
       transition: filter 0.2s;
     }
 
-    /* Subtle background when hovering directly over an icon */
     &:hover {
       background: rgba(255, 255, 255, 0.2);
     }
   }
-}
-
-.course-card {
-  overflow: hidden;
-  border: 1px solid $accent;
-  border-radius: 0.75rem;
-  background: #fff;
-
-  &__cover {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    min-height: 9rem;
-    padding: 1rem;
-  }
-
-  &__title {
-    margin: 0;
-    color: #fff;
-    font-family: $font-heading;
-    font-size: 1.5rem;
-    line-height: 1.2;
-  }
-
-  &__delete {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid $accent;
-    border-radius: 50%;
-    background: #fff;
-    color: $accent-strong;
-    cursor: pointer;
-  }
-
-  &__sections {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-height: 6rem;
-    margin: 0;
-    padding: 1rem;
-    list-style: none;
-  }
-}
-
-.section-chip {
-  display: block;
-  padding: 0.5rem 1rem;
-  border: 1px solid $accent;
-  border-radius: 999px;
-  background: $bg;
-  color: $accent;
-  text-decoration: none;
-
-  &:hover,
-  &:focus-visible {
-    background: $accent;
-    color: #fff;
-  }
-}
-
-.course-card__footer {
-  display: flex;
-  justify-content: center;
-  padding: 0.75rem;
-  border-top: 1px solid $accent;
 }
 
 // Icons inside buttons must have a fixed size, otherwise an SVG without

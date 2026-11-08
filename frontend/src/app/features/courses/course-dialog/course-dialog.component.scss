@@ -1,0 +1,110 @@
+$accent: #f4847b;
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px !important;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+
+  .code {
+    flex: 0 0 9rem;
+  }
+  .title {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.cover {
+  &__title {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    color: $accent;
+  }
+
+  &__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  &__upload {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__name {
+    color: #555;
+    font-size: 0.9rem;
+    word-break: break-all;
+  }
+
+  &__error {
+    width: 100%;
+    margin: 0;
+    color: #c0392b;
+    font-size: 0.85rem;
+  }
+
+  &__hint {
+    margin: 8px 0 0;
+    color: #777;
+    font-size: 0.85rem;
+  }
+}
+
+.swatch {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba($accent, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+
+  &.is-selected {
+    box-shadow: 0 0 0 3px $accent;
+  }
+}
+
+/* coral buttons, same as the other dialogs */
+:host ::ng-deep {
+  button[mat-stroked-button] {
+    border: 1px solid $accent !important;
+    color: $accent !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
+  }
+
+  button[mat-flat-button] {
+    background-color: $accent !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
+  }
+
+  button[mat-button] {
+    color: $accent !important;
+    font-weight: 600 !important;
+  }
+
+  .mat-mdc-form-field.mat-focused .mdc-notched-outline > * {
+    border-color: $accent !important;
+  }
+  .mat-mdc-form-field.mat-focused .mdc-floating-label {
+    color: $accent !important;
+  }
+}

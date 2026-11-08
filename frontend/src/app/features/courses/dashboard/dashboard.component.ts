@@ -103,6 +103,33 @@ export class DashboardComponent {
     }
   }
 
+    protected async openEditCourse(course: Course): Promise<void> {
+    const result = await firstValueFrom(
+      this.dialog
+        .open<CourseDialogComponent, Course, CourseFormData>(CourseDialogComponent, {
+          width: '560px',
+          data: course, // the dialog uses this to pre-fill the form
+        })
+        .afterClosed(),
+    );
+    if (!result) {
+      return;
+    }
+
+    const colorChanged = result.coverGradient !== course.coverGradient;
+
+    course.code = result.code;
+    course.title = result.title;
+    course.coverGradient = result.coverGradient;
+
+    if (result.coverFile) {
+      await this.attachCover(course, result.coverFile);
+    } else if (colorChanged) {
+      // a new color replaces the old photo cover
+      course.coverImageUrl = undefined;
+    }
+  }
+
   protected async createSection(course: Course): Promise<void> {
     const result = await firstValueFrom(
       this.dialog
