@@ -10,7 +10,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class Submissions {
-    private submissions: Submission[] = [
+  private submissions: Submission[] = [
     {
       id: 'sub-seed-1',
       activity_id: 'activity-1',
@@ -25,7 +25,8 @@ export class Submissions {
     {
       id: 'sub-seed-2',
       activity_id: 'activity-2',
-      student_id: 'student-1',
+      // '1' is the id the mock login gives every user (see AuthService.mockLogin).
+      student_id: '1',
       answer_text: 'https://example.com/my-reflection',
       status: 'graded',
       score: 45,
@@ -38,7 +39,7 @@ export class Submissions {
 
   // Mock only. The real service will join the profiles table for full_name.
   private names: Record<string, string> = {
-    'student-1': 'Test Student',
+    '1': 'Test Student',
     'student-2': 'Juan Dela Cruz',
   };
 

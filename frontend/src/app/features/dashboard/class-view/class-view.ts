@@ -7,6 +7,7 @@ import { MySection } from '../../../core/models/classwork.models';
 import { Enrollments } from '../../../core/services/enrollments';
 import { ActivityList } from '../../classwork/activities/activity-list/activity-list';
 import { sectionDesign } from '../section-design';
+import { AuthService } from '../../../core/auth/auth.service';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -20,6 +21,7 @@ const TEMP_STUDENT_ID = 'student-1';
 export class ClassView implements OnInit {
   private route = inject(ActivatedRoute);
   private enrollments = inject(Enrollments);
+  private auth = inject(AuthService);
 
   section = signal<MySection | undefined>(undefined);
   loading = signal(true);
@@ -28,7 +30,7 @@ export class ClassView implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('sectionId');
-    this.enrollments.listMySections(TEMP_STUDENT_ID).subscribe((list) => {
+    this.enrollments.listMySections(this.auth.userId() ?? '').subscribe((list) => {
       // Only sections the student has joined can be opened.
       this.section.set(list.find((s) => s.id === id));
       this.loading.set(false);

@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Activity, SubmissionWithFiles } from '../../../../core/models/classwork.models';
 import { Activities } from '../../../../core/services/activities';
 import { Submissions } from '../../../../core/services/submissions';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -24,6 +25,7 @@ export class ActivityList implements OnInit {
   private route = inject(ActivatedRoute);
   private activitiesService = inject(Activities);
   private submissionsService = inject(Submissions);
+  private auth = inject(AuthService);
 
   // Works both as a routed page (:sectionId) and embedded in Nicole's Classwork tab.
   readonly sectionIdInput = input<string>(undefined, { alias: 'sectionId' });
@@ -54,7 +56,7 @@ export class ActivityList implements OnInit {
 
     forkJoin([
       this.activitiesService.listBySection(sectionId),
-      this.submissionsService.listByStudent(TEMP_STUDENT_ID),
+      this.submissionsService.listByStudent(this.auth.userId() ?? ''),
     ]).subscribe({
       next: ([activities, subs]) => {
         // Soonest due date first; activities without a due date go last.

@@ -7,6 +7,7 @@ import { forkJoin, map, of, switchMap } from 'rxjs';
 import { Activity, SubmissionWithFiles } from '../../../core/models/classwork.models';
 import { Activities } from '../../../core/services/activities';
 import { Grades } from '../../../core/services/grades';
+import { AuthService } from '../../../core/auth/auth.service';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -25,6 +26,7 @@ interface GradeItem {
 export class MyGrades implements OnInit {
   private gradesService = inject(Grades);
   private activitiesService = inject(Activities);
+  private auth = inject(AuthService);
 
   items = signal<GradeItem[]>([]);
   loading = signal(true);
@@ -41,7 +43,7 @@ export class MyGrades implements OnInit {
 
   ngOnInit(): void {
     this.gradesService
-      .listMyGrades(TEMP_STUDENT_ID)
+      .listMyGrades(this.auth.userId() ?? '')
       .pipe(
         switchMap((list) =>
           list.length

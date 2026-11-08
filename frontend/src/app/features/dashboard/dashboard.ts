@@ -8,6 +8,7 @@ import { MySection } from '../../core/models/classwork.models';
 import { Enrollments } from '../../core/services/enrollments';
 import { JoinSectionDialog } from './join-section-dialog/join-section-dialog';
 import { sectionDesign } from './section-design';
+import { AuthService } from '../../core/auth/auth.service';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -21,6 +22,7 @@ const TEMP_STUDENT_ID = 'student-1';
 export class Dashboard implements OnInit {
   private dialog = inject(MatDialog);
   private enrollments = inject(Enrollments);
+  private auth = inject(AuthService);
 
   sections = signal<MySection[]>([]);
   loading = signal(true);
@@ -30,7 +32,7 @@ export class Dashboard implements OnInit {
   }
 
   private load(): void {
-    this.enrollments.listMySections(TEMP_STUDENT_ID).subscribe((list) => {
+    this.enrollments.listMySections(this.auth.userId() ?? '').subscribe((list) => {
       this.sections.set(list);
       this.loading.set(false);
     });

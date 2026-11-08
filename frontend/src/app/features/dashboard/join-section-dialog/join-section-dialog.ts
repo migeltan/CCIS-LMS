@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Enrollments } from '../../../core/services/enrollments';
 import { JoinErrorDialog } from './join-error-dialog';
+import { AuthService } from '../../../core/auth/auth.service';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -32,6 +33,7 @@ export class JoinSectionDialog {
   private dialogRef = inject(MatDialogRef<JoinSectionDialog, string>);
   private dialog = inject(MatDialog);
   private enrollments = inject(Enrollments);
+  private auth = inject(AuthService);
 
   private codeInput = viewChild<ElementRef<HTMLInputElement>>('codeInput');
 
@@ -59,7 +61,7 @@ export class JoinSectionDialog {
 
     this.setSaving(true);
 
-    const request$ = this.enrollments.joinSection(TEMP_STUDENT_ID, code).pipe(
+    const request$ = this.enrollments.joinSection(this.auth.userId() ?? '', code).pipe(
       map((sectionId) => ({ sectionId })),
       catchError(() => of({ sectionId: null })),
     );

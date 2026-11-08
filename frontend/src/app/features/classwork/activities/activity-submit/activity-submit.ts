@@ -15,6 +15,7 @@ import { ActivityComment, Comments } from '../../../../core/services/comments';
 import { Submissions } from '../../../../core/services/submissions';
 import { launchConfetti } from '../confetti';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -59,6 +60,7 @@ export class ActivitySubmit implements OnInit {
   private submissionsService = inject(Submissions);
   private commentsService = inject(Comments);
   private dialog = inject(MatDialog);
+  private auth = inject(AuthService);
 
   private picker = viewChild<ElementRef<HTMLInputElement>>('picker');
 
@@ -87,7 +89,7 @@ export class ActivitySubmit implements OnInit {
   readonly maxComment = MAX_COMMENT_LENGTH;
 
   private get studentId(): string {
-    return TEMP_STUDENT_ID;
+    return this.auth.userId() ?? '';
   }
 
   ngOnInit(): void {
