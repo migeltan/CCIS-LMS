@@ -14,49 +14,63 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
 .layout {
   height: 100%;
   background: $bg;
+  --mat-sidenav-container-shape: 0;
+  --mat-sidenav-container-width: 18rem;
 
   &__sidenav {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
     width: 18rem;
-    padding: 1rem 1.75rem 1rem 1rem;
+    padding: 0;
     border-right: 0;
+    border-radius: 0 !important;
     background: linear-gradient(90deg, $bg calc(100% - 1.1rem), #ffbdb5 calc(100% - 1.1rem));
+
+    /* Material's inner wrapper is what shows the scrollbar, so lock it */
+    ::ng-deep .mat-drawer-inner-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden !important;
+      padding: 1rem 2.25rem 1rem 1rem; /* right side leaves room for the coral stripe */
+      box-sizing: border-box;
+    }
   }
 
-  /* --- BRAND (Side by side & Slim) --- */
   &__brand {
     display: flex;
-    flex-direction: row; /* Puts them beside each other */
-    align-items: center; /* Centers them vertically */
-    justify-content: flex-start; /* Aligns to the left (change to center if you want) */
-    gap: 0.75rem; /* Slim gap between the two logos */
-    margin-bottom: 1rem;
-    padding-left: 1rem; /* Aligns with the nav items */
-    flex-shrink: 0;
-    flex-grow: 0;
+    align-items: center;
+    justify-content: center;   /* centers the whole logo */
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding: 0;
+    flex: none;
   }
 
   &__symbol {
-    height: 40px !important;
-    width: auto !important;
-  }
-
-  &__wordmark {
-    height: 150px !important; /* Smaller height so it matches the symbol */
-    width: auto !important;
+    flex: none;
+    height: 46px;
+    width: auto;
   }
 
   &__divider {
+    flex: none;
     width: 2px;
-    height: 35px;
-    background-color: #f4847b;
+    height: 40px;
+    background-color: $accent;
+  }
+
+  &__wordmark {
+    flex: 0 1 auto;
+    min-width: 0;
+    width: 150px;     /* make this bigger or smaller to taste */
+    height: auto;
+    object-fit: contain;
   }
 
   &__back {
     flex-shrink: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -76,13 +90,45 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   }
 
   &__nav {
-    flex: 1;
+        flex: 1;
+    min-height: 0;          /* lets the nav shrink instead of pushing the page taller */
     overflow-y: auto;
-
-    .is-active {
-      background: rgba($accent, 0.35) !important;
-      font-weight: 600;
+    scrollbar-width: none;  /* hide the scrollbar (Firefox) */
+    &::-webkit-scrollbar { display: none; }  /* hide it (Chrome/Edge) */
+   
+    /* each link is a soft pill */
+    ::ng-deep .mat-mdc-list-item {
+      margin-bottom: 4px;
       border-radius: 999px !important;
+      transition: background-color 0.18s ease;
+    }
+
+    /* remove Material's muddy hover/press overlay */
+    ::ng-deep .mat-mdc-list-item::before,
+    ::ng-deep .mat-mdc-list-item .mdc-list-item__ripple::before {
+      background-color: transparent !important;
+      opacity: 0 !important;
+    }
+
+    /* normal text */
+    ::ng-deep .mat-mdc-list-item .mdc-list-item__primary-text {
+      color: #7a4a46 !important;
+      font-weight: 500;
+      transition: color 0.18s ease;
+    }
+
+    /* hover */
+    ::ng-deep .mat-mdc-list-item:hover {
+      background-color: rgba($accent, 0.12) !important;
+    }
+
+    /* active: instant, one clean color, matching text */
+    ::ng-deep .mat-mdc-list-item.is-active {
+      background-color: rgba($accent, 0.28) !important;
+    }
+    ::ng-deep .mat-mdc-list-item.is-active .mdc-list-item__primary-text {
+      color: #c4483d !important;
+      font-weight: 700;
     }
 
     ::ng-deep .mat-mdc-list-item-icon {
@@ -99,12 +145,14 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
   }
 
   &__user-container {
+    flex: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
     border-top: 1px solid rgba($accent, 0.3);
-    padding-top: 1rem;
-    margin-top: auto;
   }
 
   &__user-info {
@@ -119,16 +167,59 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
     font-size: 0.9rem;
   }
 
+  &__avatar-btn {
+    position: relative;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover .layout__avatar-badge,
+    &:focus-visible .layout__avatar-badge {
+      opacity: 1;
+    }
+  }
+
   &__avatar {
-    width: 44px;
-    height: 44px;
+    display: block;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid $accent;
+    background: #fff;
+  }
+
+  &__avatar-badge {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    background: $accent;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+
+    svg {
+      width: 11px;
+      height: 11px;
+    }
   }
 
   &__content {
     @include stripes.background(0.78);
+    margin: 0;
+    border-radius: 0;
   }
 }
 
@@ -147,23 +238,69 @@ $font-body: 'TT Drugs', 'Poppins', sans-serif;
 }
 
 .banner {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   min-height: 10rem;
   padding: 1.5rem 2rem;
-  background: linear-gradient(180deg, #ecc1da, #9d8bb0);
+  background: linear-gradient(180deg, #ecc1da, #9d8bb0); /* default cover */
 
   &__name {
     margin: 0;
     color: #fff;
     font-family: $font-heading;
     font-size: 2.25rem;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
   }
 
   &__code {
     margin: 0.25rem 0 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
+  }
+
+  &__edit {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 16px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+  }
+}
+
+/* menu look (same as the classwork menus; harmless if duplicated) */
+::ng-deep .custom-lms-menu {
+  background-color: #fff !important;
+  border: 1px solid #f4847b !important;
+  border-radius: 12px !important;
+  padding: 0.5rem !important;
+
+  .mat-mdc-menu-item {
+    border-radius: 999px !important;
+    color: #f4847b !important;
+    font-weight: 600 !important;
   }
 }
