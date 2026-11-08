@@ -1,54 +1,77 @@
 <div class="page">
-  <header class="header">
-    <h1>My grades</h1>
-    @if (average() !== null) {
-      <p class="subtitle">
-        Average: <strong>{{ average() }}%</strong> across {{ items().length }}
-        {{ items().length === 1 ? 'activity' : 'activities' }}
-      </p>
-    }
-  </header>
+  <a mat-button class="back" [routerLink]="sectionId() ? ['/class', sectionId()] : ['/dashboard']">
+    <mat-icon>arrow_back</mat-icon>
+    {{ sectionId() ? 'Back to class' : 'My sections' }}
+  </a>
 
   @if (loading()) {
-    <div class="center"><mat-spinner diameter="40" /></div>
+    <div class="sk" role="status" aria-label="Loading your work">
+      <app-skeleton width="40%" height="36px" />
+      <app-skeleton height="120px" radius="20px" />
+      @for (n of [1, 2, 3]; track n) {
+        <app-skeleton height="72px" radius="16px" />
+      }
+    </div>
   } @else if (error()) {
-    <p class="msg-error" role="alert">
-      <mat-icon>warning</mat-icon><span>{{ error() }}</span>
-    </p>
+    <div class="center">
+      <mat-icon class="big-icon">error</mat-icon>
+      <p class="error">{{ error() }}</p>
+    </div>
   } @else {
-    @for (item of items(); track item.submission.id) {
-      <mat-card appearance="outlined" class="grade-card">
-        <mat-card-content>
-          <div class="top">
-            <div class="info">
-              <h2>{{ item.activity?.title ?? 'Activity' }}</h2>
-              <p class="muted">Submitted {{ item.submission.submitted_at | date: 'MMM d, h:mm a' }}</p>
-            </div>
+    <header class="header">
+      <h1>Your work</h1>
+      <p class="muted">{{ subtitle() }}</p>
+    </header>
 
-            <div class="score-box">
-              <span class="score">
-                {{ item.submission.score }} / {{ item.activity?.points ?? '?' }}
-              </span>
-              @if (percent(item) !== null) {
-                <span class="percent">{{ percent(item) }}%</span>
-              }
-            </div>
-          </div>
-
-          @if (item.submission.feedback) {
-            <div class="feedback">
-              <mat-icon>chat_bubble</mat-icon>
-              <p><strong>Feedback:</strong> {{ item.submission.feedback }}</p>
-            </div>
-          }
-        </mat-card-content>
-      </mat-card>
-    } @empty {
-      <div class="center">
-        <mat-icon class="big-icon">grade</mat-icon>
-        <h2>No grades yet</h2>
-        <p class="muted">Grades show up here after your teacher releases them.</p>
+    <section class="average">
+      <div class="avg-num">{{ average() === null ? '–' : average() + '%' }}</div>
+      <div class="avg-info">
+        <h2>Average grade</h2>
+        @if (average() !== null) {
+          <p class="muted">
+            Based on {{ gradedCount() }} graded {{ gradedCount() === 1 ? 'activity' : 'activities' }},
+            weighted by points.
+          </p>
+        } @else {
+          <p class="muted">Your average shows up here once your teacher releases a grade.</p>
+        }
+        <mat-progress-bar mode="determinate" [value]="average() ?? 0" />
       </div>
-    }
+    </section>
+
+    <ul class="list">
+      @for (i of rows(); track i.activity.id) {
+        <li>
+          <a class="row" [routerLink]="['/activity-submit', i.activity.id]">
+            <span class="info">
+              <span class="title">{{ i.activity.title }}</span>
+              <span class="meta">
+                @if (!sectionId()) {
+                  {{ i.section.course_code }} ·
+                }
+                @if (i.activity.due_at) {
+                  Due {{ i.activity.due_at | date: 'MMM d, h:mm a' }}
+                } @else {
+                  No due date
+                }
+              </span>
+            </span>
+            <span class="right">
+              <span class="chip" [attr.data-s]="label(i)">{{ label(i) }}</span>
+              @if (i.score !== null) {
+                <span class="score">{{ i.score }} / {{ i.activity.points }} · {{ percent(i) }}%</span>
+              } @else {
+                <span class="score muted">– / {{ i.activity.points }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      } @empty {
+        <li class="center">
+          <mat-icon class="big-icon">assignment</mat-icon>
+          <p class="muted">No activities yet.</p>
+        </li>
+      }
+    </ul>
   }
 </div>

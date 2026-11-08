@@ -2,22 +2,29 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { Activity, SubmissionWithFiles } from '../../../../core/models/classwork.models';
 import { Activities } from '../../../../core/services/activities';
 import { Submissions } from '../../../../core/services/submissions';
-import { AuthService } from '../../../../core/auth/auth.service';
+import { Skeleton } from '../../../skeleton/skeleton';
 
-// TEMPORARY: replace with auth.userId() once the Shell PR is merged.
-const TEMP_STUDENT_ID = 'student-1';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 type Status = 'Not submitted' | 'Submitted' | 'Graded';
 
 @Component({
   selector: 'app-activity-list',
-  imports: [DatePipe, RouterLink, MatIconModule, MatProgressSpinnerModule],
+  imports: [
+    DatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    Skeleton,
+  ],
   templateUrl: './activity-list.html',
   styleUrl: './activity-list.scss',
 })
@@ -34,6 +41,7 @@ export class ActivityList implements OnInit {
   private mine = signal<Record<string, SubmissionWithFiles>>({});
   loading = signal(true);
   error = signal('');
+  currentSectionId = signal<string | null>(null);
 
   /** To-do: not submitted yet and due within the next 7 days. */
   todo = computed(() => {
@@ -53,6 +61,7 @@ export class ActivityList implements OnInit {
       this.error.set('No section selected.');
       return;
     }
+    this.currentSectionId.set(sectionId);
 
     forkJoin([
       this.activitiesService.listBySection(sectionId),

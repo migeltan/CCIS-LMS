@@ -3,19 +3,16 @@ import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../core/auth/auth.service';
 import { MySection } from '../../core/models/classwork.models';
 import { Enrollments } from '../../core/services/enrollments';
+import { Skeleton } from '../skeleton/skeleton';
 import { JoinSectionDialog } from './join-section-dialog/join-section-dialog';
 import { sectionDesign } from './section-design';
-import { AuthService } from '../../core/auth/auth.service';
-
-// TEMPORARY: replace with auth.userId() once the Shell PR is merged.
-const TEMP_STUDENT_ID = 'student-1';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [RouterLink, MatButtonModule, MatIconModule, Skeleton],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

@@ -11,7 +11,12 @@
   }
 
   @if (loading()) {
-    <div class="center"><mat-spinner diameter="40" /></div>
+      <div class="sk" role="status" aria-label="Loading activity">
+      <app-skeleton width="55%" height="36px" />
+      <app-skeleton width="30%" height="28px" radius="999px" />
+      <app-skeleton height="110px" radius="16px" />
+      <app-skeleton height="260px" radius="16px" />
+    </div>
   } @else if (!activity()) {
     <div class="center">
       <mat-icon class="big-icon">search_off</mat-icon>

@@ -5,7 +5,11 @@
   </a>
 
   @if (loading()) {
-    <div class="center"><mat-spinner diameter="40" /></div>
+    <div class="sk" role="status" aria-label="Loading class">
+      <app-skeleton height="168px" radius="24px" />
+      <app-skeleton height="96px" radius="16px" />
+      <app-skeleton height="72px" radius="16px" />
+    </div>
   } @else if (section(); as s) {
     <header
       class="banner"

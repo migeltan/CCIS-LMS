@@ -15,6 +15,7 @@ import { Activities } from '../../../core/services/activities';
 import { Grades } from '../../../core/services/grades';
 import { Submissions } from '../../../core/services/submissions';
 import { ConfirmDialog } from '../../classwork/activities/confirm-dialog/confirm-dialog';
+import { Skeleton } from '../../skeleton/skeleton';
 
 // Keep the "Saving..." state visible long enough for the user to notice it.
 const MIN_SAVING_MS = 600;
@@ -30,6 +31,7 @@ const MIN_SAVING_MS = 600;
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    Skeleton,
   ],
   templateUrl: './gradebook.html',
   styleUrl: './gradebook.scss',

@@ -3,18 +3,23 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../core/auth/auth.service';
 import { MySection } from '../../../core/models/classwork.models';
 import { Enrollments } from '../../../core/services/enrollments';
 import { ActivityList } from '../../classwork/activities/activity-list/activity-list';
+import { Skeleton } from '../../skeleton/skeleton';
 import { sectionDesign } from '../section-design';
-import { AuthService } from '../../../core/auth/auth.service';
-
-// TEMPORARY: replace with auth.userId() once the Shell PR is merged.
-const TEMP_STUDENT_ID = 'student-1';
 
 @Component({
   selector: 'app-class-view',
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule, ActivityList],
+  imports: [
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    ActivityList,
+    Skeleton,
+  ],
   templateUrl: './class-view.html',
   styleUrl: './class-view.scss',
 })

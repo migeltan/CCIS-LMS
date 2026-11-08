@@ -1,75 +1,68 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { forkJoin, map, of, switchMap } from 'rxjs';
-import { Activity, SubmissionWithFiles } from '../../../core/models/classwork.models';
-import { Activities } from '../../../core/services/activities';
-import { Grades } from '../../../core/services/grades';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AuthService } from '../../../core/auth/auth.service';
-
-// TEMPORARY: replace with auth.userId() once the Shell PR is merged.
-const TEMP_STUDENT_ID = 'student-1';
-
-interface GradeItem {
-  submission: SubmissionWithFiles;
-  activity: Activity | undefined;
-}
+import { StudentWork, WorkItem, averagePercent } from '../../../core/services/student-work';
+import { Skeleton } from '../../skeleton/skeleton';
 
 @Component({
   selector: 'app-my-grades',
-  imports: [DatePipe, MatCardModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [DatePipe, RouterLink, MatButtonModule, MatIconModule, MatProgressBarModule, Skeleton],
   templateUrl: './my-grades.html',
   styleUrl: './my-grades.scss',
 })
 export class MyGrades implements OnInit {
-  private gradesService = inject(Grades);
-  private activitiesService = inject(Activities);
+  private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
+  private work = inject(StudentWork);
 
-  items = signal<GradeItem[]>([]);
+  /** Set on /class/:sectionId/work. Empty on /my-grades (all classes). */
+  sectionId = signal<string | null>(null);
+  items = signal<WorkItem[]>([]);
   loading = signal(true);
   error = signal('');
 
-  /** Average percentage across graded activities that have known points. */
-  average = computed(() => {
-    const percents = this.items()
-      .map((i) => this.percent(i))
-      .filter((p): p is number => p !== null);
-    if (percents.length === 0) return null;
-    return Math.round(percents.reduce((a, b) => a + b, 0) / percents.length);
+  subtitle = computed(() => {
+    const s = this.items()[0]?.section;
+    return this.sectionId() && s ? `${s.course_code} · ${s.course_title}` : 'All my classes';
   });
 
+  average = computed(() => averagePercent(this.items()));
+  gradedCount = computed(() => this.items().filter((i) => i.score !== null).length);
+
+  rows = computed(() =>
+    [...this.items()].sort((a, b) => this.dueMs(a) - this.dueMs(b) || 0),
+  );
+
   ngOnInit(): void {
-    this.gradesService
-      .listMyGrades(this.auth.userId() ?? '')
-      .pipe(
-        switchMap((list) =>
-          list.length
-            ? forkJoin(list.map((s) => this.activitiesService.getById(s.activity_id))).pipe(
-                map((activities) =>
-                  list.map((s, i): GradeItem => ({ submission: s, activity: activities[i] })),
-                ),
-              )
-            : of([] as GradeItem[]),
-        ),
-      )
-      .subscribe({
-        next: (items) => {
-          this.items.set(items);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.loading.set(false);
-          this.error.set('Could not load your grades. Please try again.');
-        },
-      });
+    const id = this.route.snapshot.paramMap.get('sectionId');
+    this.sectionId.set(id);
+    this.work.load(this.auth.userId() ?? '', id ?? undefined).subscribe({
+      next: (items) => {
+        this.items.set(items);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('Could not load your grades. Please try again.');
+        this.loading.set(false);
+      },
+    });
   }
 
-  percent(item: GradeItem): number | null {
-    const points = item.activity?.points;
-    if (!points) return null;
-    return Math.round(((item.submission.score ?? 0) / points) * 100);
+  label(i: WorkItem): string {
+    if (i.score !== null) return 'Graded';
+    if (i.submission) return 'Turned in';
+    return i.status === 'missing' ? 'Missing' : 'Assigned';
+  }
+
+  percent(i: WorkItem): number {
+    return i.score === null ? 0 : Math.round((i.score / i.activity.points) * 100);
+  }
+
+  private dueMs(i: WorkItem): number {
+    return i.activity.due_at ? new Date(i.activity.due_at).getTime() : Infinity;
   }
 }

@@ -16,6 +16,7 @@ import { Submissions } from '../../../../core/services/submissions';
 import { launchConfetti } from '../confetti';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { Skeleton } from '../../../skeleton/skeleton';
 
 // TEMPORARY: replace with auth.userId() once the Shell PR is merged.
 const TEMP_STUDENT_ID = 'student-1';
@@ -50,6 +51,7 @@ const AFFIRMATIONS = [
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    Skeleton,
   ],
   templateUrl: './activity-submit.html',
   styleUrl: './activity-submit.scss',

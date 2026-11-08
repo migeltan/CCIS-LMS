@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Observable, of, delay, throwError } from 'rxjs';
 import { MySection } from '../models/classwork.models';
 
 @Injectable({ providedIn: 'root' })
 export class Enrollments {
+  /** Goes up every time a student joins a class, so the sidebar knows to reload. */
+  readonly version = signal(0);
+
   // Mock catalog. The real service reads sections and courses from Supabase.
   private catalog: MySection[] = [
     {
@@ -40,13 +43,16 @@ export class Enrollments {
 
   /** Same idea as the join_section(p_code) RPC: returns the section id. */
   joinSection(studentId: string, code: string): Observable<string> {
-    const section = this.catalog.find((s) => s.join_code.toLowerCase() === code.trim().toLowerCase());
+    const section = this.catalog.find(
+      (s) => s.join_code.toLowerCase() === code.trim().toLowerCase(),
+    );
     if (!section) {
       return throwError(() => new Error('Invalid join code')).pipe(delay(200));
     }
     const ids = this.enrolled[studentId] ?? [];
     if (!ids.includes(section.id)) {
       this.enrolled[studentId] = [...ids, section.id];
+      this.version.update((v) => v + 1);
     }
     return of(section.id).pipe(delay(200));
   }

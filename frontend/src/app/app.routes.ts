@@ -44,7 +44,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/grades/gradebook/gradebook').then(m => m.Gradebook),
       },
-
+      {
+        path: 'todo',
+        loadComponent: () => import('./features/todo/todo').then(m => m.Todo),
+      },
+      {
+        path: 'class/:sectionId/work',
+        loadComponent: () => import('./features/grades/my-grades/my-grades').then(m => m.MyGrades),
+      },
+      
       // ---- Teacher side and admin (Nicole, Jaycee) ----
       {
         path: 'courses',

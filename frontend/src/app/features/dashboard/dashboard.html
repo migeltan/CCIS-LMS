@@ -11,8 +11,12 @@
   </header>
 
   @if (loading()) {
-    <div class="center">
-      <mat-spinner diameter="40" />
+    <div class="classes" role="status" aria-label="Loading your sections">
+      @for (n of [1, 2, 3]; track n) {
+        <div class="sk-card">
+          <app-skeleton height="100%" radius="16px" />
+        </div>
+      }
     </div>
   } @else {
     @if (sections().length > 0) {
