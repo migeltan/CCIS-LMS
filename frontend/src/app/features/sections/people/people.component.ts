@@ -1,14 +1,14 @@
 import { Component, computed, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
 import { MOCK_STUDENTS, findSectionById, demoDataLoaded } from '../../../shared/mock/lms-mock-data';
 import { Student } from '../../../shared/models/lms.models';
 
+const AVATAR_COLORS = ['#ffd9d5', '#f7d6e8', '#e3d9f5', '#ffe8c9', '#d8efe6'];
+
 @Component({
   selector: 'app-people',
   standalone: true,
-  imports: [CommonModule, MatButtonModule],
+  imports: [],
   templateUrl: './people.component.html',
   styleUrl: './people.component.scss',
 })
@@ -18,7 +18,6 @@ export class PeopleComponent {
   private readonly sectionId = inject(ActivatedRoute).parent?.snapshot.paramMap.get('id') ?? '';
   protected readonly sectionCode = findSectionById(this.sectionId)?.sectionCode ?? 'XXXX-XXXX';
 
-  // Signals for sorting logic
   protected readonly sortBy = signal<'lastName' | 'firstName'>('lastName');
   protected readonly ascending = signal(true);
 
@@ -29,9 +28,7 @@ export class PeopleComponent {
     const key = this.sortBy();
 
     return [...this.students].sort((a, b) => {
-      const valA = a[key].toLowerCase();
-      const valB = b[key].toLowerCase();
-      return direction * valA.localeCompare(valB);
+      return direction * a[key].toLowerCase().localeCompare(b[key].toLowerCase());
     });
   });
 
@@ -41,5 +38,13 @@ export class PeopleComponent {
 
   protected toggleSortKey(): void {
     this.sortBy.update((key) => (key === 'lastName' ? 'firstName' : 'lastName'));
+  }
+
+  protected initials(student: Student): string {
+    return `${student.firstName.charAt(0)}${student.lastName.charAt(0)}`.toUpperCase();
+  }
+
+  protected avatarColor(index: number): string {
+    return AVATAR_COLORS[index % AVATAR_COLORS.length];
   }
 }

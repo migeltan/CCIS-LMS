@@ -5,24 +5,27 @@
       <strong>{{ sectionCode }}</strong> with your class.
     </p>
   } @else {
-    <div class="people__toolbar">
-      <!-- Sort by First or Last Name -->
-      <button mat-stroked-button type="button" (click)="toggleSortKey()">
-        Sort by: {{ sortBy() === 'lastName' ? 'Last Name' : 'First Name' }}
-      </button>
+    <header class="people__head">
+      <h2 class="people__title">Classmates</h2>
+      <span class="people__count">{{ sortedStudents().length }} students</span>
+    </header>
 
-      <!-- Sort A-Z or Z-A -->
-      <button mat-stroked-button type="button" (click)="toggleSortOrder()">
-        {{ ascending() ? 'A - Z' : 'Z - A' }}
+    <div class="people__toolbar">
+      <button type="button" class="pill" (click)="toggleSortKey()">
+        Sort by: {{ sortBy() === 'lastName' ? 'Last name' : 'First name' }}
+      </button>
+      <button type="button" class="pill" (click)="toggleSortOrder()">
+        {{ ascending() ? 'A – Z' : 'Z – A' }}
       </button>
     </div>
 
     <ul class="people__list">
-      @for (student of sortedStudents(); track student.id) {
+      @for (student of sortedStudents(); track student.id; let i = $index) {
         <li class="people__item">
-          <img class="people__avatar" src="assets/images/default-avatar.svg" alt="" />
-          <span>
-            <!-- Automatically formats the name based on what you are sorting by -->
+          <span class="people__avatar" [style.background]="avatarColor(i)">
+            {{ initials(student) }}
+          </span>
+          <span class="people__name">
             @if (sortBy() === 'lastName') {
               {{ student.lastName }}, {{ student.firstName }}
             } @else {
