@@ -1,0 +1,47 @@
+<mat-sidenav-container class="layout">
+  <mat-sidenav class="layout__sidenav" mode="side" opened disableClose>
+    <!-- BRAND LOGO -->
+    <div class="layout__brand">
+      <!-- Removed the hardcoded widths/heights -->
+      <img class="layout__symbol" src="/assets/images/logo-symbol.svg" alt="Symbol" />
+      <span class="layout__divider" aria-hidden="true"></span>
+      <img class="layout__wordmark" src="/assets/images/logo-text.svg" alt="Wordmark" />
+    </div>
+
+    <!-- BACK BUTTON (Pill) -->
+    <a class="layout__back" routerLink="/">‹ My courses</a>
+
+    <!-- NAVIGATION -->
+    <mat-nav-list class="layout__nav">
+      @for (item of navItems; track item.path) {
+        <a mat-list-item [routerLink]="item.path" routerLinkActive="is-active">
+          <img matListItemIcon [src]="item.icon" alt="" class="nav-icon" />
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <!-- USER INFO (Name + Logout stacked, Avatar beside) -->
+    <div class="layout__user-container">
+      <div class="layout__user-info">
+        <span class="layout__user-name">{{ teacherFullName }}</span>
+        <button class="logout-pill">
+          <img src="/assets/images/icon-logout.svg" alt="" style="width: 12px; margin-right: 4px" />
+          Log out
+        </button>
+      </div>
+      <!-- Fixed the path to not include 'frontend/public' -->
+      <img class="layout__avatar" src="/assets/images/default-avatar.svg" alt="Avatar" />
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="layout__content">
+    <header class="banner">
+      <h1 class="banner__name">{{ section?.name ?? 'Section' }}</h1>
+      @if (section; as current) {
+        <p class="banner__code">Section code: {{ current.sectionCode }}</p>
+      }
+    </header>
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

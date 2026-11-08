@@ -1,0 +1,214 @@
+$accent: #f4847b;
+$bg: #fff9f9;
+
+.classwork {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* --- TOP TOOLBAR --- */
+.classwork__toolbar {
+  margin-bottom: 2rem;
+}
+
+.create-btn {
+  border: 1px solid $accent !important;
+  color: $accent !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 40px !important;
+  font-weight: 600 !important;
+
+  .btn-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* --- TOPIC CONTAINER --- */
+.topic {
+  background: $accent;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  /* Prevents the weird stretching */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.topic__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.topic__name {
+  color: #ffffff;
+  font-family: 'TT Drugs', sans-serif;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.topic__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* --- ICON BUTTONS (Edit, Delete, Add) --- */
+.icon-button {
+  background: transparent;
+  border: 1px solid #ffffff; /* White border */
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+
+  img {
+    width: 16px !important;
+    height: 16px !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* --- ITEM CARD --- */
+.item-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid $accent;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__kind {
+    color: $accent;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  &__due {
+    color: $accent;
+    font-size: 0.85rem;
+  }
+
+  /* Pushes the edit/delete icons to the far right */
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+
+  /* Re-style the icon buttons inside the white card */
+  .icon-button {
+    background: transparent !important;
+    border: 1px solid #f4847b !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+
+    /* Force the image to show */
+    img {
+      width: 16px !important;
+      height: 16px !important;
+      object-fit: contain !important;
+      display: block !important;
+    }
+
+    &__title {
+      color: $accent;
+      font-size: 1.3rem;
+      margin: 0.5rem 0;
+    }
+
+    &__details {
+      color: #777;
+      margin-bottom: 1.5rem;
+    }
+
+    &__footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+  }
+}
+/* --- PILL BUTTONS (Open Submissions & Files) --- */
+.action-pill {
+  border: 1px solid $accent !important;
+  color: $accent !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 36px !important;
+  font-weight: 600 !important;
+
+  .pill-icon {
+    width: 16px !important;
+    height: 16px !important;
+    object-fit: contain !important;
+  }
+}
+
+/* --- FIX THE DROPDOWN MENUS --- */
+::ng-deep .custom-lms-menu {
+  background-color: #ffffff !important;
+  border: 1px solid #f4847b !important;
+  border-radius: 12px !important;
+  padding: 0.5rem !important;
+  box-shadow: 0 4px 12px rgba(244, 132, 123, 0.15) !important;
+
+  /* The items inside the menu */
+  .mat-mdc-menu-item {
+    border-radius: 999px !important;
+    margin-bottom: 4px;
+    font-family: 'TT Drugs', 'Poppins', sans-serif !important;
+    color: #f4847b !important;
+    font-weight: 600 !important;
+    transition: background 0.2s;
+
+    /* On hover, make it light coral */
+    &:hover {
+      background-color: rgba(244, 132, 123, 0.1) !important;
+    }
+  }
+}
+
+/* --- ENSURE TOPIC DOESN'T CUT OFF MENUS --- */
+.topic {
+  background: #f4847b;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  /* Ensure there's no overflow: hidden here, or it will cut off the menu */
+}

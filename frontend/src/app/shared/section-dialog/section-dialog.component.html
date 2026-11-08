@@ -1,0 +1,19 @@
+<h2 mat-dialog-title class="section-dialog__title">Create section</h2>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="section-dialog__field">
+      <mat-label>Section name</mat-label>
+      <input matInput formControlName="name" placeholder="BSIT 3 - A" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Enter a section name.</mat-error>
+      }
+    </mat-form-field>
+    <p class="section-dialog__hint">
+      A section code is generated for you. Share it so students can join.
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button class="section-dialog__save" mat-flat-button type="submit">Save</button>
+  </mat-dialog-actions>
+</form>

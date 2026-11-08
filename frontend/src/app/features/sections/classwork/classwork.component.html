@@ -1,0 +1,94 @@
+<section class="classwork">
+  <!-- TOP TOOLBAR -->
+  <div class="classwork__toolbar">
+    <!-- Added panelClass="custom-lms-menu" -->
+    <button mat-stroked-button class="create-btn" [matMenuTriggerFor]="createMenu">
+      <img src="/assets/images/icon-add.svg" alt="" class="btn-icon" />
+      Create
+    </button>
+    <mat-menu #createMenu="matMenu" panelClass="custom-lms-menu">
+      @for (kind of createKinds; track kind) {
+        <button mat-menu-item type="button" (click)="openCreate(kind, null)">
+          {{ kind }}
+        </button>
+      }
+    </mat-menu>
+  </div>
+
+  <!-- TOPICS LOOP -->
+  @for (group of groups; track group.name ?? 'no-topic') {
+    <div class="topic">
+      <div class="topic__header">
+        <h2 class="topic__name">{{ group.name ?? 'No topic' }}</h2>
+
+        <div class="topic__actions">
+          <!-- Add to Topic Menu -->
+          <button mat-icon-button [matMenuTriggerFor]="topicAddMenu" class="icon-button">
+            <img src="/assets/images/icon-add.svg" alt="Add" />
+          </button>
+          <!-- Added panelClass here too -->
+          <mat-menu #topicAddMenu="matMenu" panelClass="custom-lms-menu">
+            <button mat-menu-item (click)="openCreate('Material', group.name)">Add Material</button>
+            <button mat-menu-item (click)="openCreate('Activity', group.name)">Add Activity</button>
+          </mat-menu>
+
+          <!-- Edit/Delete Topic Buttons -->
+          <button mat-icon-button (click)="editTopic(group.name)" class="icon-button">
+            <img src="/assets/images/icon-edit.svg" alt="Edit" />
+          </button>
+          <button mat-icon-button (click)="deleteTopic(group.name)" class="icon-button">
+            <img src="/assets/images/icon-delete.svg" alt="Delete" />
+          </button>
+        </div>
+      </div>
+
+      <!-- ... ITEMS LOOP ... -->
+      @for (item of group.items; track item.id) {
+        <article class="item-card">
+          <header class="item-card__header">
+            <span class="item-card__kind">{{ item.kind }}</span>
+            @if (item.dueAt) {
+              <span class="item-card__due">
+                Due {{ item.dueAt | date: 'MMM d, y' }} | {{ item.dueAt | date: 'h:mm a' }}
+              </span>
+            }
+
+            <div class="item-card__actions">
+              <button class="icon-button" (click)="openEdit(item)">
+                <img src="/assets/images/icon-edit.svg" alt="Edit" />
+              </button>
+              <button class="icon-button" (click)="confirmDelete(item)">
+                <img src="/assets/images/icon-delete.svg" alt="Delete" />
+              </button>
+            </div>
+          </header>
+
+          <h3 class="item-card__title">{{ item.title }}</h3>
+          <p class="item-card__details">{{ item.details }}</p>
+
+          <div class="item-card__footer">
+            @if (attachmentName(item); as fileName) {
+              <button class="action-pill" mat-stroked-button (click)="openAttachment(item)">
+                {{ fileName }}
+              </button>
+            }
+            @if (item.kind === 'Activity') {
+              <a
+                class="action-pill"
+                mat-stroked-button
+                [routerLink]="['/section', sectionId, 'submissions', item.id]"
+              >
+                <img src="/assets/images/icon-submissions.svg" alt="" class="pill-icon" />
+                Open submissions
+              </a>
+            }
+          </div>
+        </article>
+      } @empty {
+        <p class="topic__empty">Nothing under this topic yet.</p>
+      }
+    </div>
+  } @empty {
+    <p class="classwork__empty">You haven't added any classwork yet.</p>
+  }
+</section>

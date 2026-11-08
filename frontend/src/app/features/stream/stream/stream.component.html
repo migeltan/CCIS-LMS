@@ -1,0 +1,53 @@
+<div class="stream-container">
+  <!-- START A POST -->
+  <div class="post-box">
+    <div class="post-header">START A POST</div>
+    <input
+      type="text"
+      class="post-input"
+      placeholder="Announce something to your class..."
+      [(ngModel)]="newPost"
+      (keyup.enter)="submitPost()"
+    />
+    <div class="post-footer">
+      <button class="post-btn" (click)="submitPost()" [disabled]="!newPost.trim()">POST</button>
+    </div>
+  </div>
+
+  <!-- FEED -->
+  <div class="feed">
+    <div class="feed-empty" *ngIf="posts.length === 0">No posts available. Create one above.</div>
+
+    <div class="feed-item" *ngFor="let post of posts">
+      <div class="feed-header">
+        <span class="author">{{ post.author }}</span>
+        <span class="date">{{ post.date }}</span>
+      </div>
+      <div class="feed-content">
+        {{ post.content }}
+      </div>
+
+      <!-- COMMENTS (must stay inside the post loop) -->
+      <div class="comments">
+        <div class="comment" *ngFor="let comment of post.comments">
+          <span class="comment__author">{{ comment.author }}</span>
+          <span class="comment__date">{{ comment.date }}</span>
+          <p class="comment__text">{{ comment.content }}</p>
+        </div>
+
+        <div class="comment-box">
+          <input
+            type="text"
+            class="comment-input"
+            placeholder="Add a comment..."
+            [(ngModel)]="post.draft"
+            (keyup.enter)="addComment(post)"
+          />
+          <button class="comment-btn" (click)="addComment(post)" [disabled]="!post.draft?.trim()">
+            POST
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

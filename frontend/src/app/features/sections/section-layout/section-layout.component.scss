@@ -1,0 +1,169 @@
+@use '../../../shared/styles/stripes';
+
+$accent: #f4847b;
+$bg: #fff9f9;
+$font-heading: 'The Seasons', serif;
+$font-body: 'TT Drugs', 'Poppins', sans-serif;
+
+:host {
+  display: block;
+  height: 100vh;
+  font-family: $font-body;
+}
+
+.layout {
+  height: 100%;
+  background: $bg;
+
+  &__sidenav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 18rem;
+    padding: 1rem 1.75rem 1rem 1rem;
+    border-right: 0;
+    background: linear-gradient(90deg, $bg calc(100% - 1.1rem), #ffbdb5 calc(100% - 1.1rem));
+  }
+
+  /* --- BRAND (Side by side & Slim) --- */
+  &__brand {
+    display: flex;
+    flex-direction: row; /* Puts them beside each other */
+    align-items: center; /* Centers them vertically */
+    justify-content: flex-start; /* Aligns to the left (change to center if you want) */
+    gap: 0.75rem; /* Slim gap between the two logos */
+    margin-bottom: 1rem;
+    padding-left: 1rem; /* Aligns with the nav items */
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  &__symbol {
+    height: 40px !important;
+    width: auto !important;
+  }
+
+  &__wordmark {
+    height: 150px !important; /* Smaller height so it matches the symbol */
+    width: auto !important;
+  }
+
+  &__divider {
+    width: 2px;
+    height: 35px;
+    background-color: #f4847b;
+  }
+
+  &__back {
+    flex-shrink: 0;
+    margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $accent !important;
+    color: $accent !important;
+    border-radius: 999px !important;
+    padding: 0.5rem 1rem !important;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: max-content;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba($accent, 0.1) !important;
+    }
+  }
+
+  &__nav {
+    flex: 1;
+    overflow-y: auto;
+
+    .is-active {
+      background: rgba($accent, 0.35) !important;
+      font-weight: 600;
+      border-radius: 999px !important;
+    }
+
+    ::ng-deep .mat-mdc-list-item-icon {
+      width: 36px !important;
+      height: 36px !important;
+      margin-right: 16px !important;
+    }
+
+    .nav-icon {
+      width: 36px !important;
+      height: 36px !important;
+      object-fit: contain;
+    }
+  }
+
+  &__user-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba($accent, 0.3);
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+
+  &__user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__user-name {
+    color: $accent;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid $accent;
+  }
+
+  &__content {
+    @include stripes.background(0.78);
+  }
+}
+
+.logout-pill {
+  border: 1px solid $accent;
+  color: $accent;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: max-content;
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 10rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(180deg, #ecc1da, #9d8bb0);
+
+  &__name {
+    margin: 0;
+    color: #fff;
+    font-family: $font-heading;
+    font-size: 2.25rem;
+  }
+
+  &__code {
+    margin: 0.25rem 0 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+  }
+}

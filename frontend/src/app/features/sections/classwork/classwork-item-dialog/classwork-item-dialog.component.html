@@ -1,0 +1,49 @@
+<h2 mat-dialog-title class="item-dialog__title">{{ heading }}</h2>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="item-dialog__content">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.controls.title.hasError('required')) {
+        <mat-error>Enter a title.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (data.kind !== 'Topic') {
+      <mat-form-field appearance="outline">
+        <mat-label>Details</mat-label>
+        <textarea matInput rows="3" formControlName="details"></textarea>
+      </mat-form-field>
+    }
+
+    @if (data.kind === 'Activity') {
+      <mat-form-field appearance="outline">
+        <mat-label>Due date and time</mat-label>
+        <input matInput type="datetime-local" formControlName="dueAt" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Points</mat-label>
+        <input matInput type="number" min="0" formControlName="points" />
+      </mat-form-field>
+    }
+
+    @if (data.kind !== 'Topic') {
+      <div class="item-dialog__upload">
+        <button mat-stroked-button type="button" (click)="fileInput.click()">Upload</button>
+        <input #fileInput class="item-dialog__file" type="file" (change)="onFileSelected($event)" />
+        @if (fileName(); as name) {
+          <span class="item-dialog__file-name">{{ name }}</span>
+        }
+      </div>
+      @if (fileError(); as message) {
+        <p class="item-dialog__error" role="alert">{{ message }}</p>
+      }
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button class="item-dialog__save" mat-flat-button type="submit">Save</button>
+  </mat-dialog-actions>
+</form>

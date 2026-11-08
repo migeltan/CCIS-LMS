@@ -1,0 +1,100 @@
+<header class="topbar">
+  <div class="topbar__brand">
+    <img class="topbar__symbol" src="/assets/images/logo-symbol.svg" alt="Symbol" />
+    <span class="topbar__divider" aria-hidden="true"></span>
+    <img class="topbar__wordmark" src="/assets/images/logo-text.svg" alt="Iskolar's Archive" />
+  </div>
+
+  <div class="topbar__user">
+    <div class="topbar__identity">
+      <mat-slide-toggle [checked]="demoLoaded()" (change)="toggleDemo($event)">
+        Demo data
+      </mat-slide-toggle>
+
+      <div class="user-stack">
+        <span class="topbar__name">{{ teacherFullName }}</span>
+        <button mat-stroked-button type="button" class="logout-btn">
+          <img src="/assets/images/icon-logout.svg" alt="Logout" class="btn-icon" />
+          <span>Log out</span>
+        </button>
+      </div>
+    </div>
+    <img class="topbar__avatar" src="/assets/images/default-avatar.svg" alt="Avatar" />
+  </div>
+</header>
+
+<main class="dashboard">
+  <h1 class="dashboard__welcome">Welcome, Prof. {{ teacherLastName }}!</h1>
+
+  <section class="courses">
+    <div class="courses__header">
+      <h2 class="courses__heading">My courses</h2>
+      <!-- FIXED PATH HERE -->
+      <button mat-stroked-button type="button" class="add-btn" (click)="openAddCourse()">
+        <img class="btn-icon" src="/assets/images/icon-add.svg" alt="" />
+        <span>ADD COURSE</span>
+      </button>
+    </div>
+
+    @if (courses.length === 0) {
+      <div class="courses__empty">
+        <p>
+          You don't have any courses yet. To start creating classes and posting materials, you need
+          to add a course first.
+        </p>
+        <button mat-stroked-button type="button" class="add-btn" (click)="openAddCourse()">
+          <img class="btn-icon" src="/assets/images/icon-add.svg" alt="" />
+          <span>ADD COURSE</span>
+        </button>
+      </div>
+    } @else {
+      <div class="courses__grid">
+        @for (course of courses; track course.id) {
+          <article class="course-card">
+            <div class="course-card__cover" [style.background]="coverFor(course)">
+              <h3 class="course-card__title">{{ course.title }}</h3>
+              <button class="course-card__delete" type="button" (click)="confirmDelete(course)">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <ul class="course-card__sections">
+              @for (section of course.sections; track section.id) {
+                <li class="section-row">
+                  <a class="section-name" [routerLink]="['/section', section.id, 'stream']">
+                    {{ section.name }}
+                  </a>
+                  <div class="section-icons">
+                    <a [routerLink]="['/section', section.id, 'stream']" class="icon-btn"
+                      ><img src="/assets/images/icon-stream.svg" alt="Stream"
+                    /></a>
+                    <a [routerLink]="['/section', section.id, 'classwork']" class="icon-btn"
+                      ><img src="/assets/images/icon-classwork.svg" alt="Classwork"
+                    /></a>
+                    <a [routerLink]="['/section', section.id, 'grades']" class="icon-btn"
+                      ><img src="/assets/images/icon-grades.svg" alt="Grades"
+                    /></a>
+                    <a [routerLink]="['/section', section.id, 'people']" class="icon-btn"
+                      ><img src="/assets/images/icon-people.svg" alt="People"
+                    /></a>
+                  </div>
+                </li>
+              }
+            </ul>
+            <div class="course-card__footer">
+              <!-- FIXED PATH HERE -->
+              <button
+                mat-stroked-button
+                type="button"
+                class="create-btn"
+                (click)="createSection(course)"
+              >
+                <img class="btn-icon" src="/assets/images/icon-add.svg" alt="" />
+                <span>CREATE SECTION</span>
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>

@@ -1,0 +1,66 @@
+$accent: #f4847b;
+$bg: #fff9f9;
+$font-body: 'TT Drugs', 'Poppins', sans-serif;
+
+:host {
+  display: block;
+  font-family: $font-body;
+  color: $accent;
+}
+
+.grades {
+  padding: 2rem;
+  overflow-x: auto;
+
+  &__table {
+    width: 100%;
+    background: $bg;
+    color: $accent;
+    border: 1px solid $accent;
+  }
+
+  &__empty {
+    padding: 4rem 2rem;
+    font-size: 1.2rem;
+    text-align: center;
+    background: #fff;
+    border: 1px dashed $accent;
+    border-radius: 12px;
+    color: #777;
+
+    strong {
+      color: $accent;
+      font-size: 1.3rem;
+    }
+  }
+
+  &__points {
+    display: block;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  &__score {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  &__status {
+    font-size: 0.8rem;
+    color: #777;
+  }
+}
+
+th.mat-mdc-header-cell {
+  background: rgba($accent, 0.1) !important;
+  color: $accent !important;
+  font-weight: 600;
+  font-family: $font-body;
+}
+
+td.mat-mdc-cell {
+  color: $accent;
+  border-bottom: 1px solid rgba($accent, 0.2) !important;
+}

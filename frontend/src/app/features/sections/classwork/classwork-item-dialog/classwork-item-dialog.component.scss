@@ -1,0 +1,50 @@
+$accent: #f4847b;
+$bg: #fff9f9;
+$font-heading: 'The Seasons', serif;
+$font-body: 'TT Drugs', 'Poppins', sans-serif;
+
+:host {
+  display: block;
+  background: $bg;
+  font-family: $font-body;
+}
+
+.item-dialog {
+  &__title {
+    color: $accent;
+    font-family: $font-heading;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+  }
+
+  &__upload {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__file {
+    display: none;
+  }
+
+  &__file-name {
+    color: $accent;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  &__error {
+    margin: 0;
+    color: #c0392b;
+  }
+
+  &__save {
+    background: $accent;
+    color: #fff;
+  }
+}

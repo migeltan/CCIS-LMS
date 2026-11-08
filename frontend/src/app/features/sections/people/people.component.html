@@ -1,0 +1,36 @@
+<section class="people">
+  @if (!demoLoaded()) {
+    <p class="people__empty">
+      No students have joined yet. Share the Section Code:
+      <strong>{{ sectionCode }}</strong> with your class.
+    </p>
+  } @else {
+    <div class="people__toolbar">
+      <!-- Sort by First or Last Name -->
+      <button mat-stroked-button type="button" (click)="toggleSortKey()">
+        Sort by: {{ sortBy() === 'lastName' ? 'Last Name' : 'First Name' }}
+      </button>
+
+      <!-- Sort A-Z or Z-A -->
+      <button mat-stroked-button type="button" (click)="toggleSortOrder()">
+        {{ ascending() ? 'A - Z' : 'Z - A' }}
+      </button>
+    </div>
+
+    <ul class="people__list">
+      @for (student of sortedStudents(); track student.id) {
+        <li class="people__item">
+          <img class="people__avatar" src="assets/images/default-avatar.svg" alt="" />
+          <span>
+            <!-- Automatically formats the name based on what you are sorting by -->
+            @if (sortBy() === 'lastName') {
+              {{ student.lastName }}, {{ student.firstName }}
+            } @else {
+              {{ student.firstName }} {{ student.lastName }}
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  }
+</section>
