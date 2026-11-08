@@ -7,6 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { findSectionById } from '../../../shared/mock/lms-mock-data';
 import { Section } from '../../../shared/models/lms.models';
+import { Router } from '@angular/router'; 
+import { AuthService } from '../../../core/auth/auth.service'; 
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024; // 2 MB
 const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
@@ -30,6 +32,14 @@ const DEFAULT_AVATAR = 'assets/images/default-avatar.svg';
 export class SectionLayoutComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
+
+  private readonly router = inject(Router); // Add this
+  protected readonly auth = inject(AuthService); // Add this
+
+  protected logout(): void {
+    this.auth.signOut();
+    this.router.navigate(['/login']);
+  }
 
   protected readonly teacherFullName = 'Maria Santos';
 

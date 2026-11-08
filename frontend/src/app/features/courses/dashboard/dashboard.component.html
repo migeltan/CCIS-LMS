@@ -13,7 +13,7 @@
 
       <div class="user-stack">
         <span class="topbar__name">{{ teacherFullName }}</span>
-        <button mat-stroked-button type="button" class="logout-btn">
+        <button mat-stroked-button type="button" class="logout-btn" (click)="logout()">
           <img src="/assets/images/icon-logout.svg" alt="Logout" class="btn-icon" />
           <span>Log out</span>
         </button>

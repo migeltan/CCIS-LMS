@@ -5,6 +5,8 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service'; 
 
 import {
   ConfirmDialogComponent,
@@ -40,12 +42,20 @@ export class DashboardComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly storage = inject(StorageService);
 
+  private readonly router = inject(Router); 
+  protected readonly auth = inject(AuthService);
+
   // This is the magic function that People and Grades are now listening to!
   protected readonly demoLoaded = demoDataLoaded;
 
   protected readonly teacherFullName = 'Maria Santos';
   protected readonly teacherLastName = 'Santos';
   protected readonly courses: Course[] = MOCK_COURSES;
+
+  protected logout(): void {
+    this.auth.signOut(); // Clears the profile signal
+    this.router.navigate(['/login']); // Redirects to login
+  }
 
   protected async toggleDemo(change: MatSlideToggleChange): Promise<void> {
     if (change.checked) {
