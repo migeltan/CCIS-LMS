@@ -34,11 +34,15 @@ export class ClassView implements OnInit {
   design = sectionDesign;
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('sectionId');
-    this.enrollments.listMySections(this.auth.userId() ?? '').subscribe((list) => {
-      // Only sections the student has joined can be opened.
-      this.section.set(list.find((s) => s.id === id));
-      this.loading.set(false);
+    // Re-run whenever the class id in the address changes (e.g. sidebar links).
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('sectionId');
+      this.loading.set(true);
+      this.enrollments.listMySections(this.auth.userId() ?? '').subscribe((list) => {
+        // Only sections the student has joined can be opened.
+        this.section.set(list.find((s) => s.id === id));
+        this.loading.set(false);
+      });
     });
   }
 }

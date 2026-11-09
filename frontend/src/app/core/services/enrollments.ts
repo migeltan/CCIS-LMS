@@ -37,8 +37,11 @@ export class Enrollments {
   private enrolled: Record<string, string[]> = {};
 
   listMySections(studentId: string): Observable<MySection[]> {
-    const ids = this.enrolled[studentId] ?? [];
-    return of(this.catalog.filter((s) => ids.includes(s.id))).pipe(delay(200));
+    const ids = this.enrolled[studentId] ?? []; // already in the order they joined
+    const list = ids
+      .map((id) => this.catalog.find((s) => s.id === id))
+      .filter((s): s is MySection => !!s);
+    return of(list).pipe(delay(200));
   }
 
   /** Same idea as the join_section(p_code) RPC: returns the section id. */
