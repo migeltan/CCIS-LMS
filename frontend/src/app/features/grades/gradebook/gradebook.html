@@ -1,0 +1,154 @@
+<div class="page">
+  @if (!activityIdInput()) {
+    <button mat-button type="button" class="back" (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+  }
+
+  @if (loading()) {
+    <div class="sk" role="status" aria-label="Loading gradebook">
+      <app-skeleton width="120px" height="16px" />
+      <app-skeleton width="50%" height="36px" />
+      <app-skeleton width="70%" height="28px" radius="999px" />
+      @for (n of [1, 2]; track n) {
+        <app-skeleton height="300px" radius="16px" />
+      }
+    </div>
+  } @else if (!activity()) {
+    <div class="center">
+      <mat-icon class="big-icon">search_off</mat-icon>
+      <p class="msg-error">{{ error() || 'Activity not found.' }}</p>
+    </div>
+  } @else {
+    <header class="header">
+      <p class="eyebrow">Gradebook</p>
+      <h1>{{ activity()!.title }}</h1>
+      <div class="tags">
+        <span class="tag"><mat-icon>inbox</mat-icon>{{ rows().length }} submission(s)</span>
+        <span class="tag"><mat-icon>stars</mat-icon>{{ activity()!.points }} points</span>
+        <span class="tag"><mat-icon>task_alt</mat-icon>{{ gradedCount() }} graded</span>
+        <span class="tag"><mat-icon>visibility</mat-icon>{{ releasedCount() }} released</span>
+      </div>
+    </header>
+
+    @if (error()) {
+      <p class="msg msg-error" role="alert">
+        <mat-icon>warning</mat-icon><span>{{ error() }}</span>
+      </p>
+    }
+
+    @for (row of rows(); track row.id) {
+      <mat-card
+        appearance="outlined"
+        class="row-card"
+        [class.invalid]="!!rowErrors()[row.id]"
+        [class.shake]="shakeId() === row.id"
+        (animationend)="endShake($event)"
+      >
+        <mat-card-content>
+          <div class="row-head">
+            <span class="avatar" aria-hidden="true">{{ initial(row) }}</span>
+            <div class="who">
+              <span class="name">{{ name(row) }}</span>
+              <span class="when">
+                Submitted {{ row.submitted_at | date: 'MMM d, h:mm a' }}
+                @if (isLate(row)) {
+                  · <span class="late">Late</span>
+                }
+              </span>
+            </div>
+            <span class="badge" [attr.data-status]="statusLabel(row)">{{ statusLabel(row) }}</span>
+          </div>
+
+          <div class="work">
+            @if (row.answer_text) {
+              <a mat-stroked-button [href]="row.answer_text" target="_blank" rel="noopener">
+                <mat-icon>open_in_new</mat-icon>
+                Open link
+              </a>
+            }
+            @for (att of row.attachments; track att.id) {
+              <span class="file-chip"><mat-icon>description</mat-icon>{{ att.file_name }}</span>
+            }
+            @if (!row.answer_text && row.attachments.length === 0) {
+              <span class="muted">Nothing attached.</span>
+            }
+          </div>
+
+          <div class="grade-form">
+            <mat-form-field appearance="outline" class="score-field">
+              <mat-label>Score</mat-label>
+              <input
+                #score
+                matInput
+                type="number"
+                min="0"
+                step="any"
+                [attr.max]="activity()!.points"
+                [value]="row.score ?? ''"
+                [disabled]="savingId() === row.id"
+                (input)="clearRow(row.id)"
+              />
+              <span matTextSuffix class="max">/&nbsp;{{ activity()!.points }}</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="feedback-field">
+              <mat-label>Feedback</mat-label>
+              <textarea
+                #feedback
+                matInput
+                rows="2"
+                [value]="row.feedback ?? ''"
+                [disabled]="savingId() === row.id"
+                (input)="clearRow(row.id)"
+              ></textarea>
+            </mat-form-field>
+          </div>
+
+          @if (rowErrors()[row.id]; as err) {
+            <p class="msg msg-error" role="alert">
+              <mat-icon>warning</mat-icon><span>{{ err }}</span>
+            </p>
+          }
+          @if (rowMessages()[row.id]; as note) {
+            <p class="msg msg-success" role="status">
+              <mat-icon>check_circle</mat-icon><span>{{ note }}</span>
+            </p>
+          }
+        </mat-card-content>
+
+        <mat-card-actions class="row-actions">
+          <mat-checkbox
+            #release
+            [checked]="row.grade_released"
+            [disabled]="savingId() === row.id"
+            (change)="clearRow(row.id)"
+          >
+            Release grade to student
+          </mat-checkbox>
+
+          <button
+            mat-flat-button
+            type="button"
+            [disabled]="savingId() === row.id"
+            (click)="save(row, score.value, feedback.value, release.checked)"
+          >
+            @if (savingId() === row.id) {
+              <mat-spinner diameter="18" class="btn-spinner" />
+              Saving...
+            } @else {
+              Save grade
+            }
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    } @empty {
+      <div class="center">
+        <mat-icon class="big-icon">inbox</mat-icon>
+        <h2>No submissions yet</h2>
+        <p class="muted">Students' work will show up here once they submit.</p>
+      </div>
+    }
+  }
+</div>

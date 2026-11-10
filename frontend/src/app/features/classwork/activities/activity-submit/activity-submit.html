@@ -1,0 +1,223 @@
+<div class="page">
+  @if (!activityIdInput()) {
+    <a
+      mat-button
+      class="back"
+      [routerLink]="activity() ? ['/class', activity()!.section_id] : ['/dashboard']"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      {{ activity() ? 'Back to class' : 'My sections' }}
+    </a>
+  }
+
+  @if (loading()) {
+      <div class="sk" role="status" aria-label="Loading activity">
+      <app-skeleton width="55%" height="36px" />
+      <app-skeleton width="30%" height="28px" radius="999px" />
+      <app-skeleton height="110px" radius="16px" />
+      <app-skeleton height="260px" radius="16px" />
+    </div>
+  } @else if (!activity()) {
+    <div class="center">
+      <mat-icon class="big-icon">search_off</mat-icon>
+      <p>{{ error() || 'Activity not found.' }}</p>
+    </div>
+  } @else {
+    <header class="header">
+      <h1>{{ activity()!.title }}</h1>
+      <div class="tags">
+                <span class="tag" [class.tag-score]="scoreVisible()">
+          <mat-icon>stars</mat-icon>
+          @if (scoreVisible()) {
+            {{ mySubmission()!.score }} / {{ activity()!.points }} points
+          } @else {
+            {{ activity()!.points }} points
+          }
+        </span>
+        @if (activity()!.due_at) {
+          <span class="tag" [class.tag-overdue]="isOverdue()">
+            <mat-icon>{{ isOverdue() ? 'warning' : 'event' }}</mat-icon>
+            {{ isOverdue() ? 'Overdue · ' : 'Due ' }}{{ activity()!.due_at | date: 'medium' }}
+          </span>
+        }
+      </div>
+    </header>
+
+    @if (activity()!.instructions || activity()!.form_url) {
+      <mat-card appearance="outlined" class="block">
+        <mat-card-content>
+          <h2>Instructions</h2>
+          @if (activity()!.instructions) {
+            <p class="instructions">{{ activity()!.instructions }}</p>
+          }
+          @if (activity()!.form_url) {
+            <a mat-stroked-button [href]="activity()!.form_url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              Open the Google Form
+            </a>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+
+    <mat-card
+      appearance="outlined"
+      class="block work-card"
+      [class.invalid]="workInvalid()"
+      [class.shake]="shakeWork()"
+      (animationend)="endShake($event)"
+    >
+      <mat-card-content>
+        <div class="work-header">
+          <h2>Your work</h2>
+          @if (mySubmission(); as sub) {
+            <span class="status" [attr.data-status]="statusLabel(sub)">{{ statusLabel(sub) }}</span>
+          } @else {
+            <span class="status" data-status="Not submitted">Not submitted</span>
+          }
+        </div>
+
+        @if (mySubmission(); as sub) {
+          <p class="muted">Last submitted {{ sub.submitted_at | date: 'medium' }}</p>
+
+          @for (att of sub.attachments; track att.id) {
+            <p class="file-line"><mat-icon>attach_file</mat-icon>{{ att.file_name }}</p>
+          }
+
+          @if (sub.grade_released && sub.feedback) {
+            <div class="grade-box">
+              <p class="feedback"><strong>Feedback:</strong> {{ sub.feedback }}</p>
+            </div>
+          }
+        }
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Link to your work</mat-label>
+          <input
+            matInput
+            type="url"
+            placeholder="https://..."
+            [value]="linkUrl()"
+            [disabled]="saving()"
+            (input)="onLinkInput($event)"
+          />
+          <mat-icon matSuffix>link</mat-icon>
+        </mat-form-field>
+
+        <div class="file-row">
+          <input
+            #picker
+            type="file"
+            hidden
+            accept=".pdf,.pptx,.docx,.png,.jpg,.jpeg"
+            (change)="onFileChange($event)"
+          />
+          <button mat-stroked-button type="button" [disabled]="saving()" (click)="picker.click()">
+            <mat-icon>upload_file</mat-icon>
+            Choose file
+          </button>
+
+          @if (file(); as f) {
+            <span class="file-chip">
+              <mat-icon>description</mat-icon>
+              <span class="file-name">{{ f.name }}</span>
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Remove file"
+                [disabled]="saving()"
+                (click)="clearFile()"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </span>
+          } @else {
+            <span class="muted">PDF, PPTX, DOCX, PNG or JPG, up to 10 MB</span>
+          }
+        </div>
+
+        @if (error()) {
+          <p class="msg msg-error" role="alert">
+            <mat-icon>warning</mat-icon><span>{{ error() }}</span>
+          </p>
+        }
+        @if (message()) {
+          <p class="msg msg-success" role="status">
+            <mat-icon>celebration</mat-icon><span>{{ message() }}</span>
+          </p>
+        }
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-flat-button type="button" [disabled]="saving()" (click)="askToSubmit()">
+          @if (saving()) {
+            <mat-spinner diameter="18" class="btn-spinner" />
+            Submitting...
+          } @else {
+            {{ mySubmission() ? 'Resubmit' : 'Submit' }}
+          }
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <section class="comments">
+      <div class="comments-head">
+        <mat-icon>forum</mat-icon>
+        <h2>Private comments</h2>
+      </div>
+
+      @for (c of comments(); track c.id) {
+        <div class="comment" [class.mine]="isMine(c)">
+          <span class="comment-avatar" aria-hidden="true">{{ c.author_name.charAt(0) }}</span>
+          <div class="comment-body">
+            <p class="comment-meta">
+              <strong>{{ isMine(c) ? 'You' : c.author_name }}</strong>
+              <span>{{ c.created_at | date: 'MMM d, h:mm a' }}</span>
+            </p>
+            <p class="comment-text">{{ c.body }}</p>
+          </div>
+        </div>
+      }
+
+      @if (commentOpen()) {
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Message to your teacher</mat-label>
+          <textarea
+            matInput
+            rows="3"
+            [attr.maxlength]="maxComment"
+            [value]="commentText()"
+            [disabled]="sendingComment()"
+            (input)="onCommentInput($event)"
+          ></textarea>
+          <mat-hint align="end">{{ commentText().length }} / {{ maxComment }}</mat-hint>
+        </mat-form-field>
+
+        @if (commentError()) {
+          <p class="msg msg-error" role="alert">
+            <mat-icon>warning</mat-icon><span>{{ commentError() }}</span>
+          </p>
+        }
+
+        <div class="comment-actions">
+          <button mat-button type="button" [disabled]="sendingComment()" (click)="cancelComment()">
+            Cancel
+          </button>
+          <button mat-flat-button type="button" [disabled]="sendingComment()" (click)="sendComment()">
+            @if (sendingComment()) {
+              <mat-spinner diameter="18" class="btn-spinner" />
+              Sending...
+            } @else {
+              Send
+            }
+          </button>
+        </div>
+      } @else {
+        <button mat-button type="button" class="add-comment" (click)="openComment()">
+          <mat-icon>comment</mat-icon>
+          Add comment
+        </button>
+      }
+    </section>
+  }
+</div>

@@ -1,0 +1,77 @@
+<div class="page">
+  <a mat-button class="back" [routerLink]="sectionId() ? ['/class', sectionId()] : ['/dashboard']">
+    <mat-icon>arrow_back</mat-icon>
+    {{ sectionId() ? 'Back to class' : 'My sections' }}
+  </a>
+
+  @if (loading()) {
+    <div class="sk" role="status" aria-label="Loading your work">
+      <app-skeleton width="40%" height="36px" />
+      <app-skeleton height="120px" radius="20px" />
+      @for (n of [1, 2, 3]; track n) {
+        <app-skeleton height="72px" radius="16px" />
+      }
+    </div>
+  } @else if (error()) {
+    <div class="center">
+      <mat-icon class="big-icon">error</mat-icon>
+      <p class="error">{{ error() }}</p>
+    </div>
+  } @else {
+    <header class="header">
+      <h1>Your work</h1>
+      <p class="muted">{{ subtitle() }}</p>
+    </header>
+
+    <section class="average">
+      <div class="avg-num">{{ average() === null ? '–' : average() + '%' }}</div>
+      <div class="avg-info">
+        <h2>Average grade</h2>
+        @if (average() !== null) {
+          <p class="muted">
+            Based on {{ gradedCount() }} graded {{ gradedCount() === 1 ? 'activity' : 'activities' }},
+            weighted by points.
+          </p>
+        } @else {
+          <p class="muted">Your average shows up here once your teacher releases a grade.</p>
+        }
+        <mat-progress-bar mode="determinate" [value]="average() ?? 0" />
+      </div>
+    </section>
+
+    <ul class="list">
+      @for (i of rows(); track i.activity.id) {
+        <li>
+          <a class="row" [routerLink]="['/activity-submit', i.activity.id]">
+            <span class="info">
+              <span class="title">{{ i.activity.title }}</span>
+              <span class="meta">
+                @if (!sectionId()) {
+                  {{ i.section.course_code }} ·
+                }
+                @if (i.activity.due_at) {
+                  Due {{ i.activity.due_at | date: 'MMM d, h:mm a' }}
+                } @else {
+                  No due date
+                }
+              </span>
+            </span>
+            <span class="right">
+              <span class="chip" [attr.data-s]="label(i)">{{ label(i) }}</span>
+              @if (i.score !== null) {
+                <span class="score">{{ i.score }} / {{ i.activity.points }} · {{ percent(i) }}%</span>
+              } @else {
+                <span class="score muted">– / {{ i.activity.points }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      } @empty {
+        <li class="center">
+          <mat-icon class="big-icon">assignment</mat-icon>
+          <p class="muted">No activities yet.</p>
+        </li>
+      }
+    </ul>
+  }
+</div>

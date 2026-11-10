@@ -1,0 +1,110 @@
+<div class="page">
+  @if (!loading() && !error()) {
+    <div class="top">
+      @if (todo().length > 0) {
+        <section class="todo">
+          <div class="todo-head">
+            <mat-icon>checklist</mat-icon>
+            <h2>To do this week</h2>
+            <span class="count">{{ todo().length }}</span>
+          </div>
+          <ul class="todo-list">
+            @for (a of todo(); track a.id) {
+              <li>
+                <a class="todo-item" [routerLink]="['/activity-submit', a.id]">
+                  <span class="todo-title">{{ a.title }}</span>
+                  <span class="todo-due">{{ dueLabel(a) }} · {{ a.due_at | date: 'MMM d, h:mm a' }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <section class="work-card">
+        <mat-icon>assignment_turned_in</mat-icon>
+        <div>
+          <h2>Your work</h2>
+          <p class="muted">See your activities, grades and average.</p>
+        </div>
+        <a mat-stroked-button [routerLink]="['/class', currentSectionId(), 'work']">View your work</a>
+      </section>
+    </div>
+  }
+
+  <header class="header">
+    <h2>Activities</h2>
+    <p class="subtitle">Open an activity to read the instructions and submit your work.</p>
+  </header>
+
+  @if (loading()) {
+    <div role="status" aria-label="Loading activities">
+      @for (n of [1, 2, 3]; track n) {
+        <div class="sk-row">
+          <app-skeleton width="44px" height="44px" radius="50%" />
+          <div class="sk-lines">
+            <app-skeleton width="45%" height="18px" />
+            <app-skeleton width="30%" height="14px" />
+          </div>
+          <app-skeleton width="90px" height="26px" radius="999px" />
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="center">
+      <mat-icon class="big-icon">error</mat-icon>
+      <p class="error">{{ error() }}</p>
+    </div>
+  } @else if (activities().length === 0) {
+    <div class="center">
+      <mat-icon class="big-icon">assignment</mat-icon>
+      <h3>No activities yet</h3>
+      <p class="muted">Your teacher has not posted anything for this section.</p>
+    </div>
+  } @else {
+    <ul class="list">
+      @for (a of activities(); track a.id) {
+        <li>
+          <a class="row" [routerLink]="['/activity-submit', a.id]">
+            <span class="main">
+              <span class="icon" [attr.data-status]="status(a)">
+                <mat-icon>{{ icon(a) }}</mat-icon>
+              </span>
+              <span class="info">
+                <span class="title">{{ a.title }}</span>
+                <span class="meta">
+                  {{ a.points }} points
+                  @if (a.due_at) {
+                    · Due {{ a.due_at | date: 'MMM d, h:mm a' }}
+                  }
+                </span>
+              </span>
+              <span class="right">
+                @if (isOverdue(a)) {
+                  <span class="badge" data-status="Overdue">Overdue</span>
+                } @else {
+                  <span class="badge" [attr.data-status]="status(a)">{{ status(a) }}</span>
+                }
+                @if (score(a); as s) {
+                  <span class="score">{{ s }}</span>
+                }
+              </span>
+            </span>
+
+            <span class="more">
+              <span class="more-inner">
+                <p class="instructions">
+                  {{ a.instructions || 'No instructions for this activity.' }}
+                </p>
+                <span class="open-hint">
+                  Open activity
+                  <mat-icon>arrow_forward</mat-icon>
+                </span>
+              </span>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</div>
