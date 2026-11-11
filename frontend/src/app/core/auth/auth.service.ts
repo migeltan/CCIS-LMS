@@ -1,4 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
+import { supabase } from '../supabase';
 
 export type Role = 'student' | 'teacher' | 'admin';
 
@@ -12,38 +13,39 @@ export interface Profile {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // MOCK: starts logged out. Replace with real Supabase later.
   profile = signal<Profile | null>(null);
   role = computed(() => this.profile()?.role ?? null);
   userId = computed(() => this.profile()?.id ?? null);
   isLoggedIn = computed(() => !!this.profile());
-  ready: Promise<void> = Promise.resolve();
+  ready: Promise<void> = this.loadProfile(); // keeps you signed in after a refresh
 
   async signInWithGoogle() {
-    this.mockLogin('student@iskolarngbayan.pup.edu.ph');
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    });
   }
 
-  async signInWithEmail(email: string, _password: string) {
-    this.mockLogin(email);
+  async signInWithEmail(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    await this.loadProfile();
   }
 
   async signOut() {
+    await supabase.auth.signOut();
     this.profile.set(null);
   }
 
-  // Testing trick: an email containing "admin" or "teacher" gets that role
-  private mockLogin(email: string) {
-    const role: Role = email.includes('admin')
-      ? 'admin'
-      : email.includes('teacher')
-        ? 'teacher'
-        : 'student';
-    this.profile.set({
-      id: '1',
-      email,
-      full_name: email.split('@')[0],
-      role,
-      status: 'active',
-    });
+  private async loadProfile() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      this.profile.set(null);
+      return;
+    }
+    const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+    this.profile.set((data as Profile) ?? null);
   }
 }
