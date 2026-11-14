@@ -1,0 +1,31 @@
+$accent: #f4847b;
+$bg: #fff9f9;
+$font-heading: 'The Seasons', serif;
+$font-body: 'TT Drugs', 'Poppins', sans-serif;
+
+:host {
+  display: block;
+  background: $bg;
+  font-family: $font-body;
+}
+
+.section-dialog {
+  &__title {
+    color: $accent;
+    font-family: $font-heading;
+  }
+
+  &__field {
+    width: 100%;
+  }
+
+  &__hint {
+    margin: 0;
+    color: $accent;
+  }
+
+  &__save {
+    background: $accent;
+    color: #fff;
+  }
+}

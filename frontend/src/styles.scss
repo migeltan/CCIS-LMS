@@ -5,6 +5,22 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+@font-face {
+  font-family: 'The Seasons';
+  src: url('/assets/fonts/TheSeasons-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Drugs';
+  src: url('/assets/fonts/TTDrugs-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 html {
   height: 100%;
   @include mat.theme(

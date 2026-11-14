@@ -1,0 +1,39 @@
+<section class="people">
+  @if (!demoLoaded()) {
+    <p class="people__empty">
+      No students have joined yet. Share the Section Code:
+      <strong>{{ sectionCode }}</strong> with your class.
+    </p>
+  } @else {
+    <header class="people__head">
+      <h2 class="people__title">Classmates</h2>
+      <span class="people__count">{{ sortedStudents().length }} students</span>
+    </header>
+
+    <div class="people__toolbar">
+      <button type="button" class="pill" (click)="toggleSortKey()">
+        Sort by: {{ sortBy() === 'lastName' ? 'Last name' : 'First name' }}
+      </button>
+      <button type="button" class="pill" (click)="toggleSortOrder()">
+        {{ ascending() ? 'A – Z' : 'Z – A' }}
+      </button>
+    </div>
+
+    <ul class="people__list">
+      @for (student of sortedStudents(); track student.id; let i = $index) {
+        <li class="people__item">
+          <span class="people__avatar" [style.background]="avatarColor(i)">
+            {{ initials(student) }}
+          </span>
+          <span class="people__name">
+            @if (sortBy() === 'lastName') {
+              {{ student.lastName }}, {{ student.firstName }}
+            } @else {
+              {{ student.firstName }} {{ student.lastName }}
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  }
+</section>
