@@ -1,0 +1,323 @@
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 16px 24px 32px;
+}
+
+.back {
+  margin-left: -12px;
+}
+
+.header {
+  margin: 8px 0 16px;
+
+  h1 {
+    margin: 0 0 8px;
+    font: var(--mat-sys-headline-medium);
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 8px;
+  border-radius: 999px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-large);
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.tag-overdue {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.block {
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0 0 8px;
+    font: var(--mat-sys-title-medium);
+  }
+}
+
+mat-card-content {
+  padding-top: 16px !important;
+}
+
+.instructions {
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+}
+
+.work-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+// ---------- "Your work" turns red and shakes when nothing is attached ----------
+.work-card {
+  transition:
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.work-card.invalid {
+  --mat-card-outlined-outline-color: var(--mat-sys-error);
+  border-color: var(--mat-sys-error);
+  box-shadow: 0 0 0 1px var(--mat-sys-error);
+  background: color-mix(in srgb, var(--mat-sys-error) 6%, var(--mat-sys-surface));
+}
+
+.work-card.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-card.shake {
+    animation: none;
+  }
+}
+
+.status {
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-large);
+
+  &[data-status='Submitted'] {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+  }
+
+  &[data-status='Graded'] {
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+  }
+}
+
+.muted {
+  margin: 0 0 8px;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-medium);
+}
+
+.file-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+
+.grade-box {
+  margin: 8px 0 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+
+  .score {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+  }
+
+  .feedback {
+    margin: 8px 0 0;
+  }
+}
+
+.full {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 0 4px 0 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 999px;
+
+  mat-icon {
+    flex-shrink: 0;
+  }
+
+  .file-name {
+    overflow: hidden;
+    max-width: 260px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0;
+
+  mat-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.msg-error {
+  color: var(--mat-sys-error);
+}
+
+.msg.msg-success {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #e6f4ea;
+  color: #137333;
+  font-weight: 600;
+
+  mat-icon {
+    color: #137333;
+  }
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+// ---------- Private comments ----------
+.comments {
+  padding-top: 8px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.comments-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  color: var(--mat-sys-on-surface-variant);
+
+  h2 {
+    margin: 0;
+    font: var(--mat-sys-title-medium);
+  }
+}
+
+.comment {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.comment-avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--mat-sys-surface-container-highest);
+  font-weight: 600;
+}
+
+.comment.mine .comment-avatar {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.comment-body {
+  min-width: 0;
+}
+
+.comment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+
+  span {
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-small);
+  }
+}
+
+.comment-text {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.add-comment {
+  margin-left: -8px;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 64px 16px;
+  text-align: center;
+}
+
+.big-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  color: var(--mat-sys-outline);
+}
+
+.tag.tag-score {
+  background: #e6f4ea;
+  color: #137333;
+  font-weight: 600;
+}
+
+.sk { display: grid; gap: 16px; }

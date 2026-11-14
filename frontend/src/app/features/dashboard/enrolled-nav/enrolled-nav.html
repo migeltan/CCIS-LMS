@@ -1,0 +1,40 @@
+@if (auth.role() === 'student') {
+  <nav class="nav" aria-label="My classes">
+    <a class="item" routerLink="/todo" routerLinkActive="active">
+      <mat-icon>checklist</mat-icon>
+      <span class="code">To-do</span>
+    </a>
+    <a class="item" routerLink="/my-grades" routerLinkActive="active">
+      <mat-icon>grade</mat-icon>
+      <span class="code">My grades</span>
+    </a>
+
+    <p class="heading"><mat-icon>school</mat-icon> Enrolled</p>
+
+    @if (loading()) {
+      <div role="status" aria-label="Loading classes">
+        @for (n of [1, 2, 3]; track n) {
+          <div class="item">
+            <app-skeleton width="36px" height="36px" radius="50%" />
+            <div class="text">
+              <app-skeleton width="80px" height="14px" />
+              <app-skeleton width="56px" height="12px" />
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      @for (s of sections(); track s.id) {
+        <a class="item" [routerLink]="['/class', s.id]" routerLinkActive="active">
+          <span class="dot" [style.background]="design(s.id).c1">{{ s.course_code.charAt(0) }}</span>
+          <span class="text">
+            <span class="code">{{ s.course_code }}</span>
+            <span class="sec">{{ s.name }}</span>
+          </span>
+        </a>
+      } @empty {
+        <p class="empty">Join a section to see it here.</p>
+      }
+    }
+  </nav>
+}

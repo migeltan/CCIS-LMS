@@ -1,0 +1,35 @@
+<div class="page">
+  <a mat-button routerLink="/dashboard" class="back">
+    <mat-icon>arrow_back</mat-icon>
+    My sections
+  </a>
+
+  @if (loading()) {
+    <div class="sk" role="status" aria-label="Loading class">
+      <app-skeleton height="168px" radius="24px" />
+      <app-skeleton height="96px" radius="16px" />
+      <app-skeleton height="72px" radius="16px" />
+    </div>
+  } @else if (section(); as s) {
+    <header
+      class="banner"
+      [style.--c1]="design(s.id).c1"
+      [style.--c2]="design(s.id).c2"
+      [attr.data-pattern]="design(s.id).pattern"
+    >
+      <h1>{{ s.course_title }}</h1>
+      <p>
+        {{ s.course_code }} · {{ s.name }}@if (s.term) { · {{ s.term }} }
+      </p>
+    </header>
+
+    <app-activity-list [sectionId]="s.id" />
+  } @else {
+    <div class="center">
+      <mat-icon class="big-icon">search_off</mat-icon>
+      <h2>Section not found</h2>
+      <p class="muted">You have not joined this section.</p>
+      <a mat-flat-button routerLink="/dashboard">Back to my sections</a>
+    </div>
+  }
+</div>

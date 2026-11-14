@@ -1,0 +1,60 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>My sections</h1>
+      <p class="subtitle">Click a section to see materials and activities.</p>
+    </div>
+    <button mat-flat-button type="button" (click)="openJoinDialog()">
+      <mat-icon>add</mat-icon>
+      Join a section
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="classes" role="status" aria-label="Loading your sections">
+      @for (n of [1, 2, 3]; track n) {
+        <div class="sk-card">
+          <app-skeleton height="100%" radius="16px" />
+        </div>
+      }
+    </div>
+  } @else {
+    @if (sections().length > 0) {
+      <div class="classes">
+        @for (s of sections(); track s.id) {
+          <a
+            class="class-card"
+            [routerLink]="['/class', s.id]"
+            [style.--c1]="design(s.id).c1"
+            [style.--c2]="design(s.id).c2"
+            [attr.data-pattern]="design(s.id).pattern"
+          >
+            <div class="banner">
+              <h2 class="title">{{ s.course_title }}</h2>
+              <p class="meta">{{ s.name }}</p>
+            </div>
+
+            <div class="avatar" aria-hidden="true">{{ initials(s.course_code) }}</div>
+
+            <div class="details">
+              <p class="line"><mat-icon>menu_book</mat-icon>{{ s.course_code }}</p>
+              @if (s.term) {
+                <p class="line"><mat-icon>event</mat-icon>{{ s.term }}</p>
+              }
+              <p class="line open-hint">
+                Open section <mat-icon>arrow_forward</mat-icon>
+              </p>
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <div class="center empty">
+        <mat-icon class="big-icon empty-icon">school</mat-icon>
+        <h2>You have not joined any sections yet</h2>
+        <p>Use a join code from your teacher to get started.</p>
+        <button mat-flat-button type="button" (click)="openJoinDialog()">Join a section</button>
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,107 @@
+<div class="page">
+  <header class="header">
+    <h1>To-do</h1>
+    <p class="subtitle">Everything due across your classes.</p>
+  </header>
+
+  @if (loading()) {
+    <div role="status" aria-label="Loading to-do list">
+      <app-skeleton width="260px" height="56px" radius="8px" />
+      <div class="sk-tabs">
+        <app-skeleton width="90px" height="24px" />
+        <app-skeleton width="90px" height="24px" />
+        <app-skeleton width="90px" height="24px" />
+      </div>
+      @for (n of [1, 2, 3, 4]; track n) {
+        <div class="sk-row">
+          <app-skeleton width="140px" height="22px" />
+          <app-skeleton width="24px" height="22px" />
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="center">
+      <mat-icon class="big-icon">error</mat-icon>
+      <p class="error">{{ error() }}</p>
+    </div>
+  } @else {
+    <mat-form-field appearance="outline" class="filter" subscriptSizing="dynamic">
+      <mat-label>Class</mat-label>
+      <mat-select [value]="classFilter()" (selectionChange)="classFilter.set($event.value)">
+        <mat-option value="all">All classes</mat-option>
+        @for (c of classes(); track c.id) {
+          <mat-option [value]="c.id">{{ c.course_code }} · {{ c.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="tabs" role="tablist">
+      @for (t of tabs; track t.id) {
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [class.active]="tab() === t.id"
+          [attr.aria-selected]="tab() === t.id"
+          (click)="tab.set(t.id)"
+        >
+          {{ t.label }}
+          <span class="n">{{ counts()[t.id] }}</span>
+        </button>
+      }
+    </div>
+
+    @if (visibleCount() === 0) {
+      <div class="center">
+        <mat-icon class="big-icon">{{ empty().icon }}</mat-icon>
+        <h2>{{ empty().title }}</h2>
+        <p class="muted">{{ empty().text }}</p>
+      </div>
+    } @else {
+      @for (g of groups(); track g.label) {
+        @if (g.items.length > 0) {
+          <details class="group" open>
+            <summary>
+              <span class="g-label">{{ g.label }}</span>
+              <span class="g-count">{{ g.items.length }}</span>
+              <mat-icon class="chev">expand_more</mat-icon>
+            </summary>
+            <ul class="items">
+              @for (i of g.items; track i.activity.id) {
+                <li>
+                  <a class="item" [routerLink]="['/activity-submit', i.activity.id]">
+                    <span class="info">
+                      <span class="title">{{ i.activity.title }}</span>
+                      <span class="meta">{{ i.section.course_code }} · {{ i.section.name }}</span>
+                    </span>
+                    <span class="right">
+                      @if (i.score !== null) {
+                        <span class="score">{{ i.score }} / {{ i.activity.points }}</span>
+                      } @else if (i.status === 'missing') {
+                        <span class="chip chip-missing">Missing</span>
+                      } @else if (i.status === 'done') {
+                        <span class="chip">Turned in</span>
+                      }
+                      <span class="due">
+                        @if (i.activity.due_at) {
+                          Due {{ i.activity.due_at | date: 'MMM d, h:mm a' }}
+                        } @else {
+                          No due date
+                        }
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              }
+            </ul>
+          </details>
+        } @else if (tab() === 'assigned') {
+          <div class="group group-empty">
+            <span class="g-label">{{ g.label }}</span>
+            <span class="g-count">0</span>
+          </div>
+        }
+      }
+    }
+  }
+</div>

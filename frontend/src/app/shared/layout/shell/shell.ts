@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/auth/auth.service';
+import { EnrolledNav } from '../../../features/dashboard/enrolled-nav/enrolled-nav';
 
 @Component({
   selector: 'app-shell',
@@ -13,6 +14,7 @@ import { AuthService } from '../../../core/auth/auth.service';
     RouterOutlet, RouterLink, RouterLinkActive,
     MatToolbarModule, MatSidenavModule, MatListModule,
     MatIconModule, MatButtonModule,
+    EnrolledNav,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',

@@ -42,16 +42,50 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/layout/shell/shell').then((m) => m.Shell),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-      
-      // GWEN'S STUDENT DASHBOARD
+
+      // ---- Student side (Gwen) ----
       {
         path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
+      },
+      {
+        path: 'class/:sectionId',
         loadComponent: () =>
-          import('./features/dashboard/dashboard-placeholder/dashboard-placeholder')
-            .then(m => m.DashboardPlaceholder),
+          import('./features/dashboard/class-view/class-view').then(m => m.ClassView),
+      },
+      {
+        path: 'activity-submit/:activityId',
+        loadComponent: () =>
+          import('./features/classwork/activities/activity-submit/activity-submit')
+            .then(m => m.ActivitySubmit),
+      },
+      {
+        path: 'my-grades',
+        loadComponent: () => import('./features/grades/my-grades/my-grades').then(m => m.MyGrades),
+      },
+      {
+        path: 'activity-create/:sectionId',
+        canActivate: [roleGuard('teacher', 'admin')],
+        loadComponent: () =>
+          import('./features/classwork/activities/activity-create/activity-create')
+            .then(m => m.ActivityCreate),
+      },
+      {
+        path: 'gradebook/:activityId',
+        canActivate: [roleGuard('teacher', 'admin')],
+        loadComponent: () =>
+          import('./features/grades/gradebook/gradebook').then(m => m.Gradebook),
+      },
+      {
+        path: 'todo',
+        loadComponent: () => import('./features/todo/todo').then(m => m.Todo),
+      },
+      {
+        path: 'class/:sectionId/work',
+        loadComponent: () => import('./features/grades/my-grades/my-grades').then(m => m.MyGrades),
       },
 
-      // ADMIN
+      // ---- Admin ----
       {
         path: 'admin',
         canActivate: [roleGuard('admin')],
