@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>{{ heading }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="dialog-body">
+    <div class="row">
+      <mat-form-field appearance="outline" class="code">
+        <mat-label>Course code</mat-label>
+        <input matInput formControlName="code" placeholder="e.g. IT 301" />
+        @if (form.controls.code.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="title">
+        <mat-label>Course title</mat-label>
+        <input matInput formControlName="title" />
+        @if (form.controls.title.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <section class="cover">
+      <h3 class="cover__title">Cover</h3>
+
+      <div class="cover__swatches">
+        @for (g of gradients; track g.name) {
+          <button
+            type="button"
+            class="swatch"
+            [class.is-selected]="selectedGradient() === g.value"
+            [style.background]="g.value"
+            [attr.aria-label]="g.name"
+            (click)="pickGradient(g.value)"
+          ></button>
+        }
+      </div>
+
+      <div class="cover__upload">
+        <input
+          #fileInput
+          type="file"
+          hidden
+          accept="image/png,image/jpeg,image/webp"
+          (change)="onFileSelected($event)"
+        />
+        <button mat-stroked-button type="button" (click)="fileInput.click()">
+          {{ fileName() ? 'Replace photo' : 'Upload cover photo' }}
+        </button>
+        @if (fileName(); as name) {
+          <span class="cover__name">{{ name }}</span>
+        }
+        @if (fileError(); as err) {
+          <p class="cover__error">{{ err }}</p>
+        }
+      </div>
+      <p class="cover__hint">A photo replaces the color. PNG, JPG or WebP, up to 2 MB.</p>
+    </section>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit">{{ saveLabel }}</button>
+  </mat-dialog-actions>
+</form>

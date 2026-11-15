@@ -1,0 +1,109 @@
+<mat-sidenav-container class="layout">
+  <mat-sidenav class="layout__sidenav" mode="side" opened disableClose>
+    <!-- BRAND LOGO -->
+    <div class="layout__brand">
+      <img class="layout__symbol" src="/assets/images/logo-symbol.svg" alt="Symbol" />
+      <span class="layout__divider" aria-hidden="true"></span>
+      <img class="layout__wordmark" src="/assets/images/logo-text.svg" alt="Wordmark" />
+    </div>
+
+    <!-- BACK BUTTON (Pill) -->
+    <a class="layout__back" routerLink="/">‹ My courses</a>
+
+    <!-- NAVIGATION -->
+    <mat-nav-list class="layout__nav">
+      @for (item of navItems; track item.path) {
+        <a
+          mat-list-item
+          [routerLink]="item.path"
+          routerLinkActive="is-active"
+          [disableRipple]="true"
+        >
+          <img matListItemIcon [src]="item.icon" alt="" class="nav-icon" />
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <!-- USER INFO -->
+    <div class="layout__user-container">
+      <div class="layout__user-info">
+        <span class="layout__user-name">{{ teacherFullName }}</span>
+        <button class="logout-pill" (click)="logout()">
+          <img src="/assets/images/icon-logout.svg" alt="" style="width: 12px; margin-right: 4px" />
+          Log out
+        </button>
+      </div>
+
+      <!-- Profile photo: click to change or remove -->
+      <input
+        #avatarInput
+        type="file"
+        hidden
+        accept="image/png,image/jpeg,image/webp"
+        (change)="onAvatarSelected($event)"
+      />
+      <button
+        type="button"
+        class="layout__avatar-btn"
+        aria-label="Change profile photo"
+        [matMenuTriggerFor]="avatarMenu"
+      >
+        <img class="layout__avatar" [src]="avatarSrc()" alt="Profile photo" />
+        <span class="layout__avatar-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </svg>
+        </span>
+      </button>
+      <mat-menu #avatarMenu="matMenu" panelClass="custom-lms-menu">
+        <button mat-menu-item type="button" (click)="avatarInput.click()">Change photo</button>
+        <button mat-menu-item type="button" [disabled]="!avatar()" (click)="resetAvatar()">
+          Remove photo
+        </button>
+      </mat-menu>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="layout__content">
+    <header class="banner" [style.background]="bannerBackground()">
+      <div class="banner__text">
+        <h1 class="banner__name">{{ section?.name ?? 'Section' }}</h1>
+        @if (section; as current) {
+          <p class="banner__code">Section code: {{ current.sectionCode }}</p>
+        }
+      </div>
+
+      <!-- Cover controls -->
+      <input
+        #coverInput
+        type="file"
+        hidden
+        accept="image/png,image/jpeg,image/webp"
+        (change)="onCoverSelected($event)"
+      />
+      <button
+        type="button"
+        class="banner__edit"
+        aria-label="Change cover"
+        [matMenuTriggerFor]="coverMenu"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            d="M21 19V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"
+          />
+        </svg>
+        Change cover
+      </button>
+      <mat-menu #coverMenu="matMenu" panelClass="custom-lms-menu">
+        <button mat-menu-item type="button" (click)="coverInput.click()">Upload image</button>
+        <button mat-menu-item type="button" [disabled]="!cover()" (click)="resetCover()">
+          Use default
+        </button>
+      </mat-menu>
+    </header>
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

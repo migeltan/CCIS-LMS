@@ -1,0 +1,56 @@
+<h2 mat-dialog-title class="course-dialog__title">Add course</h2>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="course-dialog__content">
+    <div class="course-dialog__preview" [style.background]="previewBackground"></div>
+
+    <div class="course-dialog__cover-row">
+      <div class="course-dialog__swatches">
+        @for (gradient of gradients; track gradient) {
+          <button
+            class="course-dialog__swatch"
+            type="button"
+            aria-label="Choose cover color"
+            [class.course-dialog__swatch--selected]="
+              !previewUrl() && form.controls.coverGradient.value === gradient
+            "
+            [style.background]="gradient"
+            (click)="selectGradient(gradient)"
+          ></button>
+        }
+      </div>
+      <span class="course-dialog__or">or</span>
+      <button mat-stroked-button type="button" (click)="photoInput.click()">Upload photo</button>
+      <input
+        #photoInput
+        class="course-dialog__file"
+        type="file"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+    @if (uploadError(); as message) {
+      <p class="course-dialog__error" role="alert">{{ message }}</p>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Course code</mat-label>
+      <input matInput formControlName="code" />
+      @if (form.controls.code.hasError('required')) {
+        <mat-error>Enter a course code.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Course title</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.controls.title.hasError('required')) {
+        <mat-error>Enter a course title.</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button class="course-dialog__save" mat-flat-button type="submit">Save</button>
+  </mat-dialog-actions>
+</form>

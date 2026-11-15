@@ -1,0 +1,12 @@
+<div class="confirm">
+  <span class="confirm__icon">
+    <img src="/frontend/public/assets/images/icon-delete.svg" alt="" />
+  </span>
+  <p class="confirm__message">{{ data.message }}</p>
+  <div class="confirm__actions">
+    <button mat-button type="button" [mat-dialog-close]="false">Cancel</button>
+    <button class="confirm__delete" mat-flat-button type="button" [mat-dialog-close]="true">
+      {{ data.confirmLabel ?? 'Delete' }}
+    </button>
+  </div>
+</div>

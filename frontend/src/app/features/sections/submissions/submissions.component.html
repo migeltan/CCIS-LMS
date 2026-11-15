@@ -1,0 +1,136 @@
+@if (activity; as current) {
+  <section class="submissions">
+    <a
+      class="submissions__back"
+      mat-stroked-button
+      [routerLink]="['/section', sectionId, 'classwork']"
+    >
+      ‹ Classwork
+    </a>
+
+    <div class="submissions__layout">
+      <aside class="roster">
+        <h2 class="roster__title">Submissions</h2>
+        <div class="roster__counts">
+          <div class="count">
+            <strong class="count__number">{{ submittedCount }}</strong>
+            submitted
+          </div>
+          <div class="count">
+            <strong class="count__number">{{ pendingCount }}</strong>
+            pending
+          </div>
+        </div>
+
+        <button mat-stroked-button type="button" (click)="toggleSort()">
+          Sort ({{ ascending() ? 'A - Z' : 'Z - A' }}) last name first
+        </button>
+
+        <ul class="roster__list">
+          @for (student of sortedStudents(); track student.id) {
+            <li>
+              <button
+                class="roster__item"
+                type="button"
+                [class.roster__item--active]="student.id === selected()?.id"
+                (click)="select(student)"
+              >
+                <img class="roster__avatar" src="assets/images/default-avatar.svg" alt="" />
+                <span class="roster__name"> {{ student.lastName }}, {{ student.firstName }} </span>
+                <span class="roster__status">
+                  {{ gradeFor(student.id)?.status ?? 'Pending' }}
+                </span>
+                <span class="roster__score">
+                  {{ gradeFor(student.id)?.score ?? '_' }} / {{ current.points }}
+                </span>
+              </button>
+            </li>
+          } @empty {
+            <li class="roster__empty">
+              No students have joined yet. Share the Section Code:
+              <strong>{{ sectionCode }}</strong> with your class.
+            </li>
+          }
+        </ul>
+      </aside>
+
+      <div class="detail">
+        <header class="detail__activity">
+          <div class="detail__heading">
+            <h2 class="detail__title">{{ current.title }}</h2>
+            @if (current.dueAt) {
+              <span class="detail__due">
+                Due {{ current.dueAt | date: 'MMM d, y' }} |
+                {{ current.dueAt | date: 'h:mm a' }}
+              </span>
+            }
+          </div>
+          <p class="detail__details">{{ current.details }}</p>
+        </header>
+
+        @if (selected(); as student) {
+          <div class="detail__student">
+            <div class="detail__student-header">
+              <img class="roster__avatar" src="assets/images/default-avatar.svg" alt="" />
+              <span class="detail__student-name">
+                {{ student.lastName }}, {{ student.firstName }}
+              </span>
+            </div>
+
+            @if (gradeFor(student.id); as grade) {
+              <p class="detail__file">
+                @if (grade.submissionFile) {
+                  Submitted file: <strong>{{ grade.submissionFile }}</strong>
+                } @else {
+                  No file submitted yet.
+                }
+              </p>
+
+              <label class="detail__grade">
+                Grade:
+                <input
+                  class="detail__grade-input"
+                  type="number"
+                  min="0"
+                  [max]="current.points"
+                  [disabled]="grade.status === 'Pending'"
+                  [value]="grade.score ?? ''"
+                  (change)="setScore(student, $event)"
+                />
+                / {{ current.points }}
+              </label>
+            }
+
+            <div class="comments">
+              <h3 class="comments__title">Comments</h3>
+              @for (comment of selectedComments(); track comment.id) {
+                <p class="comments__item">
+                  {{ comment.text }}
+                  <span class="comments__time">
+                    {{ comment.postedAt | date: 'MMM d, h:mm a' }}
+                  </span>
+                </p>
+              }
+              <div class="comments__composer">
+                <input
+                  class="comments__input"
+                  type="text"
+                  placeholder="Write a comment..."
+                  aria-label="Write a comment"
+                  [formControl]="commentDraft"
+                  (keydown.enter)="addComment()"
+                />
+                <button mat-stroked-button type="button" (click)="addComment()">Post</button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+} @else {
+  <p class="submissions__missing">
+    That activity wasn't found in this section.
+    <a [routerLink]="['/section', sectionId, 'classwork']">Back to Classwork</a>
+  </p>
+}

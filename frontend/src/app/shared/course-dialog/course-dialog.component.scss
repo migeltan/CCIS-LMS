@@ -1,0 +1,73 @@
+$accent: #f4847b;
+$bg: #fff9f9;
+$font-heading: 'The Seasons', serif;
+$font-body: 'TT Drugs', 'Poppins', sans-serif;
+
+:host {
+  display: block;
+  background: $bg;
+  font-family: $font-body;
+}
+
+.course-dialog {
+  &__title {
+    color: $accent;
+    font-family: $font-heading;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__preview {
+    height: 9rem;
+    border-radius: 0.75rem;
+  }
+
+  &__cover-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0.5rem 0 1rem;
+  }
+
+  &__swatches {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  &__or {
+    color: $accent;
+    font-weight: 600;
+  }
+
+  &__file {
+    display: none;
+  }
+
+  &__error {
+    margin: 0 0 1rem;
+    color: #c0392b;
+  }
+
+  &__swatch {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &--selected {
+      border-color: $accent;
+      box-shadow: 0 0 0 2px $bg;
+    }
+  }
+
+  &__save {
+    background: $accent;
+    color: #fff;
+  }
+}

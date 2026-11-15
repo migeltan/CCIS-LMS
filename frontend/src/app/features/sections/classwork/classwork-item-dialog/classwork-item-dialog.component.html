@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>{{ heading }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="dialog-body">
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>{{ data.kind === 'Topic' ? 'Topic name' : 'Title' }}</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.controls.title.hasError('required')) {
+        <mat-error>This field is required</mat-error>
+      }
+    </mat-form-field>
+
+    @if (data.kind !== 'Topic') {
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Details</mat-label>
+        <textarea matInput rows="3" formControlName="details"></textarea>
+      </mat-form-field>
+
+      @if (data.kind === 'Activity') {
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Due date</mat-label>
+            <input matInput type="datetime-local" formControlName="dueAt" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Points</mat-label>
+            <input matInput type="number" min="0" formControlName="points" />
+          </mat-form-field>
+        </div>
+      }
+
+      <section class="attach">
+        <h3 class="attach__title">Attachments</h3>
+        <p class="attach__hint">Students in this class can open these.</p>
+
+        <div class="file-upload">
+          <input
+            #fileInput
+            type="file"
+            hidden
+            [accept]="acceptAttr"
+            (change)="onFileSelected($event)"
+          />
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            {{ fileName() ? 'Replace file' : 'Upload file' }}
+          </button>
+          @if (fileName(); as name) {
+            <span class="file-upload__name">{{ name }}</span>
+          }
+          @if (fileError(); as err) {
+            <p class="msg-error">{{ err }}</p>
+          }
+        </div>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Link (optional)</mat-label>
+          <input matInput type="text" formControlName="linkUrl" placeholder="https://..." />
+          @if (linkError(); as err) {
+            <mat-hint class="msg-error">{{ err }}</mat-hint>
+          }
+        </mat-form-field>
+      </section>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit">Save</button>
+  </mat-dialog-actions>
+</form>
